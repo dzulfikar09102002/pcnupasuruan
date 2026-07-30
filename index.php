@@ -6,8 +6,8 @@ $tahun = date('Y');
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PCNU Kota Pasuruan — Nahdlatul Ulama Cabang Kota Pasuruan</title>
-<meta name="description" content="Situs resmi Pengurus Cabang Nahdlatul Ulama (PCNU) Kota Pasuruan. Warta kegiatan, khidmah umat, dan lembaga-lembaga NU di Kota Pasuruan.">
+<title>PCNU Kota Pasuruan</title>
+<meta name="description" content="Situs resmi Pengurus Cabang Nahdlatul Ulama (PCNU) Kota Pasuruan. Seputar kegiatan, khidmah umat, dan lembaga-lembaga NU di Kota Pasuruan.">
 <link rel="icon" href="https://pcnupasuruankota.id/wp-content/uploads/2026/07/cropped-pp-scaled-1.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -70,6 +70,26 @@ button{ font-family:inherit; cursor:pointer; }
 
 @media (prefers-reduced-motion: reduce){
   *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important; }
+}
+
+/* ---------- Scroll reveal ---------- */
+.reveal{
+  opacity:0;
+  transform:translateY(26px);
+  transition:opacity .7s cubic-bezier(.2,.7,.3,1), transform .7s cubic-bezier(.2,.7,.3,1);
+  transition-delay:var(--reveal-delay, 0ms);
+}
+.reveal.is-visible{
+  opacity:1;
+  transform:none;
+}
+@keyframes fadeInUp{
+  from{ opacity:0; transform:translateY(18px); }
+  to{ opacity:1; transform:none; }
+}
+@keyframes floatSlow{
+  0%,100%{ transform:translateY(0); }
+  50%{ transform:translateY(-10px); }
 }
 .motif-star{
   display:inline-block;
@@ -162,8 +182,8 @@ header.site-header{
   display:flex;align-items:center;justify-content:center;
   color:var(--emas-terang); flex-shrink:0;
 }
-.brand-text{ 
-  min-width:0; 
+.brand-text{
+  min-width:0;
   margin-top: 4px;
 }
 .brand-text strong{
@@ -183,23 +203,83 @@ header.site-header{
   opacity:.85;
 }
 
-nav.main-nav{ display:flex; gap:30px; }
-nav.main-nav a{
-  color:var(--kertas-tua);
-  font-size:14.5px;
-  font-weight:500;
-  position:relative;
-  padding:6px 0;
+nav.main-nav {
+  display: flex;
+  gap: 30px;
+  align-items: center;
 }
-nav.main-nav a::after{
-  content:"";
-  position:absolute; left:0; right:0; bottom:0;
-  height:2px; background:var(--emas);
-  transform:scaleX(0); transform-origin:left;
-  transition:transform .25s ease;
+
+nav.main-nav a {
+  color: var(--kertas-tua);
+  font-size: 14.5px;
+  font-weight: 500;
+  position: relative;
+  padding: 6px 0;
+  text-decoration: none;
 }
-nav.main-nav a:hover::after{ transform:scaleX(1); }
-nav.main-nav a:hover{ color:var(--putih); }
+
+nav.main-nav > a::after,
+nav.main-nav .nav-dropdown > a::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 2px; background: var(--emas);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .25s ease;
+}
+
+nav.main-nav a:hover::after { transform: scaleX(1); }
+nav.main-nav a:hover { color: var(--putih); }
+
+.nav-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.nav-dropdown .dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--hijau, #1b4d3e);
+  min-width: 200px;
+  max-height: 350px;
+  overflow-y: auto;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+  border-radius: 6px;
+  z-index: 99;
+  padding: 8px 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.nav-dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.nav-dropdown .dropdown-content a {
+  color: var(--kertas-tua) !important;
+  padding: 8px 16px;
+  display: block;
+  font-size: 13.5px;
+  white-space: nowrap;
+  text-align: left;
+  transition: background 0.2s;
+}
+
+.nav-dropdown .dropdown-content a::after {
+  display: none !important;
+}
+
+.nav-dropdown .dropdown-content a:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--putih) !important;
+}
+
+.dropdown-content::-webkit-scrollbar {
+  width: 5px;
+}
+.dropdown-content::-webkit-scrollbar-thumb {
+  background: var(--emas, #c5a059);
+  border-radius: 4px;
+}
 
 .nav-toggle{
   display:none;
@@ -225,8 +305,8 @@ nav.main-nav a:hover{ color:var(--putih); }
 .hero .wrap{
   position:relative;
   display:grid;
-  grid-template-columns:1.05fr .95fr;
-  gap:56px;
+  grid-template-columns:.92fr 1.08fr;
+  gap:48px;
   align-items:center;
 }
 .eyebrow{
@@ -269,68 +349,135 @@ nav.main-nav a:hover{ color:var(--putih); }
   transition:transform .18s ease, background .18s ease, border-color .18s ease;
 }
 .btn:hover{ transform:translateY(-2px); }
-.btn-emas{ background:var(--emas); color:var(--hijau-deep); }
-.btn-emas:hover{ background:var(--emas-terang); }
+.btn-emas{ background:var(--emas); color:var(--hijau-deep); box-shadow:0 0 0 0 rgba(227,183,90,.5); }
+.btn-emas:hover{ background:var(--emas-terang); box-shadow:0 8px 24px -6px rgba(227,183,90,.65); }
 .btn-ghost{ border-color:rgba(255,255,255,.35); color:var(--putih); }
 .btn-ghost:hover{ border-color:var(--emas-terang); color:var(--emas-terang); }
 
+/* ---------- Hero carousel 3:2 (dari /wp/v2/media?search=hero-img) ---------- */
 .hero-visual{
   position:relative;
-  aspect-ratio:1/1;
-  max-width:440px;
+  width:100%;
+  max-width:600px;
   margin:0 auto;
 }
-.star-frame{
-  position:absolute; inset:0;
-  clip-path: polygon(
-    50% 0%, 61% 12%, 82% 4%, 79% 22%, 100% 25%, 87% 40%,
-    100% 55%, 79% 58%, 82% 78%, 61% 68%, 50% 100%, 39% 68%,
-    18% 78%, 21% 58%, 0% 55%, 13% 40%, 0% 25%, 21% 22%,
-    18% 4%, 39% 12%
-  );
-  background:linear-gradient(135deg, var(--emas), var(--hijau-soft));
-  padding:6px;
-}
-.star-frame .inner{
-  width:100%; height:100%;
-  clip-path: inherit;
-  background:var(--hijau-deep);
+.carousel-frame{
   position:relative;
+  aspect-ratio:3/2;
+  width:100%;
+  border-radius:22px;
   overflow:hidden;
+  border:3px solid var(--emas);
+  background:var(--hijau-deep);
+  box-shadow:0 40px 70px -30px rgba(8,41,33,.6), 0 0 0 1px rgba(227,183,90,.18), 0 0 0 8px rgba(227,183,90,.06);
+  transition:box-shadow .35s ease;
 }
-.star-frame .inner img{
-  position:absolute; inset:0;
+.carousel-frame:hover{
+  box-shadow:0 46px 80px -28px rgba(8,41,33,.65), 0 0 0 1px rgba(227,183,90,.25), 0 0 0 10px rgba(227,183,90,.09);
+}
+.carousel-track{
+  display:flex;
+  height:100%;
+  width:100%;
+  transition:transform .85s cubic-bezier(.65,.05,.36,1);
+  will-change:transform;
+}
+.carousel-track .slide{
+  flex:0 0 100%;
+  height:100%;
+  position:relative;
+}
+.carousel-track .slide img{
   width:100%; height:100%; object-fit:cover;
-  opacity:0; transition:opacity 1.1s ease;
 }
-.star-frame .inner img.active{ opacity:1; }
-.star-frame .inner .ph-fallback{
+.carousel-track .slide::after{
+  content:"";
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(8,41,33,0) 55%, rgba(8,41,33,.55) 100%);
+  pointer-events:none;
+}
+.carousel-frame .ph-fallback{
   position:absolute; inset:0;
   display:flex; align-items:center; justify-content:center;
   color:var(--emas-terang); opacity:.4;
 }
-.star-frame .inner .ph-fallback svg{ width:40%; height:40%; }
+.carousel-frame .ph-fallback svg{ width:26%; height:26%; }
+
+.carousel-arrow{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:38px; height:38px;
+  border-radius:50%;
+  border:1px solid rgba(255,253,247,.3);
+  background:rgba(8,41,33,.45);
+  backdrop-filter:blur(4px);
+  color:var(--putih);
+  display:flex; align-items:center; justify-content:center;
+  z-index:3;
+  opacity:0;
+  transition:opacity .2s ease, background .2s ease, border-color .2s ease;
+}
+.carousel-arrow svg{ width:17px; height:17px; }
+.carousel-arrow.prev{ left:14px; }
+.carousel-arrow.next{ right:14px; }
+.carousel-frame:hover .carousel-arrow,
+.carousel-arrow:focus-visible{ opacity:1; }
+.carousel-arrow:hover{
+  background:var(--emas);
+  color:var(--hijau-deep);
+  border-color:var(--emas);
+}
+@media (hover:none){
+  .carousel-arrow{ opacity:1; background:rgba(8,41,33,.55); }
+}
+
+.carousel-dots{
+  display:flex;
+  justify-content:center;
+  gap:9px;
+  margin-top:20px;
+}
+.carousel-dots button{
+  width:8px; height:8px;
+  border-radius:50%;
+  background:rgba(8,41,33,.18);
+  border:none;
+  padding:0;
+  transition:background .2s ease, width .2s ease;
+}
+.carousel-dots button.active{
+  background:var(--hijau);
+  width:22px;
+  border-radius:5px;
+}
 
 .fact-strip{
-  background:var(--emas-pucat);
+  background:linear-gradient(115deg, var(--emas-pucat) 0%, #EAD9A8 55%, var(--emas-pucat) 100%);
   border-bottom:1px solid var(--garis);
+  position:relative;
+  overflow:hidden;
 }
 .fact-strip .wrap{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:0;
+  position:relative;
 }
 .fact{
-  padding:26px 20px;
+  padding:30px 20px;
   text-align:center;
   border-right:1px solid var(--garis);
+  transition:transform .25s ease;
 }
+.fact:hover{ transform:translateY(-3px); }
 .fact:last-child{ border-right:none; }
 .fact strong{
   display:block;
   font-family:var(--serif);
-  font-size:clamp(22px,3vw,32px);
+  font-size:clamp(24px,3.2vw,34px);
   color:var(--hijau);
+  font-variant-numeric:tabular-nums;
 }
 .fact span{
   font-family:var(--mono);
@@ -363,23 +510,37 @@ section{ padding:80px 0; }
 .news-card{
   background:var(--putih);
   border:1px solid var(--garis);
-  border-radius:var(--radius);
+  border-radius:10px;
   overflow:hidden;
   display:flex;
   flex-direction:column;
-  transition:transform .2s ease, box-shadow .2s ease;
+  position:relative;
+  transition:transform .28s cubic-bezier(.2,.7,.3,1), box-shadow .28s ease, border-color .28s ease;
+}
+.news-card::before{
+  content:"";
+  position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg, var(--emas), var(--hijau));
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:transform .35s ease;
+  z-index:2;
 }
 .news-card:hover{
-  transform:translateY(-4px);
-  box-shadow:0 18px 34px -20px rgba(8,41,33,.35);
+  transform:translateY(-6px);
+  box-shadow:0 24px 40px -20px rgba(8,41,33,.4);
+  border-color:rgba(193,147,47,.35);
 }
+.news-card:hover::before{ transform:scaleX(1); }
+.news-thumb{ transition:transform .5s ease; }
+.news-card:hover .news-thumb img{ transform:scale(1.06); }
 .news-thumb{
   aspect-ratio:16/10;
   background:var(--hijau);
   position:relative;
   overflow:hidden;
 }
-.news-thumb img{ width:100%; height:100%; object-fit:cover; }
+.news-thumb img{ width:100%; height:100%; object-fit:cover; transition:transform .5s ease; }
 .news-thumb .ph-fallback{
   position:absolute; inset:0;
   display:flex; align-items:center; justify-content:center;
@@ -451,7 +612,7 @@ section{ padding:80px 0; }
   font-size:13.5px;
 }
 
-.profil{ background:var(--kertas-tua); }
+.profil{ background:linear-gradient(175deg, var(--kertas-tua) 0%, #E9E0C6 55%, var(--kertas-tua) 100%); }
 .profil-grid{
   display:grid;
   grid-template-columns:1.3fr .9fr;
@@ -462,6 +623,7 @@ section{ padding:80px 0; }
   color:var(--tinta-lunak);
   font-size:15px;
   margin-bottom:16px;
+  text-align: justify;
 }
 .profil-text strong{ color:var(--tinta); }
 .profil-block{ margin-bottom:26px; }
@@ -538,7 +700,7 @@ section{ padding:80px 0; }
 }
 
 /* ---------- Layanan & Konsultasi (bidang) ---------- */
-.layanan{ background:var(--kertas); }
+.layanan{ background:linear-gradient(180deg, var(--kertas) 0%, #EFE7D2 100%); }
 .bidang-grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -546,7 +708,7 @@ section{ padding:80px 0; }
   margin-bottom:40px;
 }
 .bidang-card{
-  border-radius:var(--radius);
+  border-radius:12px;
   padding:28px 26px;
   color:var(--putih);
   position:relative;
@@ -554,6 +716,12 @@ section{ padding:80px 0; }
   display:flex;
   flex-direction:column;
   min-height:220px;
+  box-shadow:0 18px 32px -22px rgba(8,41,33,.5);
+  transition:transform .3s cubic-bezier(.2,.7,.3,1), box-shadow .3s ease;
+}
+.bidang-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 26px 42px -20px rgba(8,41,33,.55);
 }
 .bidang-card::after{
   content:"";
@@ -563,9 +731,9 @@ section{ padding:80px 0; }
   background:currentColor;
   clip-path: polygon(50% 0%, 61% 20%, 82% 8%, 78% 30%, 100% 33%, 84% 48%, 100% 63%, 78% 68%, 82% 90%, 61% 78%, 50% 100%, 39% 78%, 18% 90%, 22% 68%, 0% 63%, 16% 48%, 0% 33%, 22% 30%, 18% 8%, 39% 20%);
 }
-.bidang-card.v1{ background:var(--hijau-deep); }
-.bidang-card.v2{ background:var(--hijau-soft); }
-.bidang-card.v3{ background:#5C4420; }
+.bidang-card.v1{ background:linear-gradient(150deg, var(--hijau-deep) 0%, #0a3327 100%); }
+.bidang-card.v2{ background:linear-gradient(150deg, var(--hijau-soft) 0%, #123f31 100%); }
+.bidang-card.v3{ background:linear-gradient(150deg, #5C4420 0%, #4A3619 100%); }
 .bidang-card .kategori{
   font-family:var(--mono);
   font-size:11px;
@@ -608,18 +776,26 @@ section{ padding:80px 0; }
 .unggulan-item{
   background:var(--putih);
   border:1px solid var(--garis);
-  border-radius:var(--radius);
+  border-radius:10px;
   padding:20px;
   text-align:center;
+  transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.unggulan-item:hover{
+  transform:translateY(-4px);
+  box-shadow:0 16px 28px -18px rgba(8,41,33,.35);
+  border-color:rgba(193,147,47,.3);
 }
 .unggulan-item .icon{
   width:40px;height:40px;
   margin:0 auto 12px;
   border-radius:50%;
-  background:var(--emas-pucat);
+  background:linear-gradient(150deg, var(--emas-pucat), #E9D6A6);
   color:var(--hijau);
   display:flex;align-items:center;justify-content:center;
+  transition:transform .25s ease;
 }
+.unggulan-item:hover .icon{ transform:scale(1.1) rotate(-6deg); }
 .unggulan-item .icon svg{ width:18px;height:18px; }
 .unggulan-item h4{
   font-family:var(--sans);
@@ -628,8 +804,8 @@ section{ padding:80px 0; }
   color:var(--tinta);
 }
 
-/* ---------- Kepemimpinan ---------- */
-.kepemimpinan{ background:var(--kertas-tua); }
+/* ---------- Kepengurusan ---------- */
+.kepengurusan{ background:linear-gradient(165deg, var(--kertas-tua) 0%, #E4D9B8 100%); }
 .pimpinan-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -638,9 +814,20 @@ section{ padding:80px 0; }
 .pimpinan-card{
   background:var(--putih);
   border:1px solid var(--garis);
-  border-radius:var(--radius);
+  border-radius:10px;
   padding:30px;
   position:relative;
+  overflow:hidden;
+  transition:transform .28s cubic-bezier(.2,.7,.3,1), box-shadow .28s ease;
+}
+.pimpinan-card::before{
+  content:"";
+  position:absolute; top:0; left:0; bottom:0; width:4px;
+  background:linear-gradient(180deg, var(--emas), var(--hijau));
+}
+.pimpinan-card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 22px 38px -22px rgba(8,41,33,.4);
 }
 .pimpinan-card .motif-star{
   color:var(--emas);
@@ -672,7 +859,7 @@ section{ padding:80px 0; }
 }
 
 /* ---------- Program & Khidmah ---------- */
-.program{ background:var(--kertas); }
+.program{ background:linear-gradient(180deg, var(--kertas) 0%, #EFE7D2 55%, var(--kertas) 100%); }
 .program-grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -681,17 +868,25 @@ section{ padding:80px 0; }
 .program-card{
   background:var(--putih);
   border:1px solid var(--garis);
-  border-radius:var(--radius);
+  border-radius:10px;
   padding:26px;
+  transition:transform .28s cubic-bezier(.2,.7,.3,1), box-shadow .28s ease, border-color .28s ease;
+}
+.program-card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 20px 34px -20px rgba(8,41,33,.38);
+  border-color:rgba(193,147,47,.3);
 }
 .program-card .icon{
   width:44px;height:44px;
   border-radius:50%;
-  background:var(--hijau);
+  background:linear-gradient(150deg, var(--hijau), var(--hijau-deep));
   color:var(--emas-terang);
   display:flex;align-items:center;justify-content:center;
   margin-bottom:18px;
+  transition:transform .3s ease;
 }
+.program-card:hover .icon{ transform:scale(1.1) rotate(6deg); }
 .program-card .icon svg{ width:20px; height:20px; }
 .program-card h3{
   font-size:17px;
@@ -705,7 +900,7 @@ section{ padding:80px 0; }
 
 /* ---------- CTA banner ---------- */
 .cta-banner{
-  background:var(--hijau-deep);
+  background:linear-gradient(120deg, var(--hijau-deep) 0%, var(--hijau) 60%, var(--hijau-soft) 100%);
   color:var(--putih);
   position:relative;
   overflow:hidden;
@@ -743,17 +938,44 @@ section{ padding:80px 0; }
    FOOTER
    ============================================================ */
 footer{
-  background:var(--hijau-deep);
+  background:linear-gradient(180deg, var(--hijau-deep) 0%, #06201a 100%);
   color:var(--kertas-tua);
   border-top:1px solid rgba(255,255,255,.08);
+  position:relative;
+  overflow:hidden;
 }
+.footer-particles{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+  z-index:0;
+}
+.footer-particles span{
+  position:absolute;
+  bottom:-20px;
+  display:block;
+  border-radius:50%;
+  background:var(--emas-terang);
+  opacity:0;
+  animation-name:particleRise;
+  animation-timing-function:ease-in;
+  animation-iteration-count:infinite;
+}
+@keyframes particleRise{
+  0%{ transform:translateY(0) translateX(0); opacity:0; }
+  10%{ opacity:.55; }
+  90%{ opacity:.35; }
+  100%{ transform:translateY(-420px) translateX(var(--drift, 20px)); opacity:0; }
+}
+.footer-grid, .footer-bottom{ position:relative; z-index:1; }
 .footer-grid{
   display:grid;
   grid-template-columns:1.4fr 1fr 1fr 1fr;
   gap:36px;
-  padding:60px 0 40px;
+  padding:64px 0 40px;
 }
-.footer-brand{ display:flex; gap:14px; margin-bottom:16px; }
+.footer-brand{ display:flex; gap:14px; margin-bottom:16px; align-items:center; }
 .footer-brand img{
   width:44px;height:44px;border-radius:50%;
   border:2px solid var(--emas); object-fit:cover;
@@ -772,7 +994,8 @@ footer{
   font-weight:700;
 }
 .footer-col ul li{ margin-bottom:10px; font-size:14px; }
-.footer-col a:hover{ color:var(--emas-terang); }
+.footer-col a{ transition:color .2s ease, padding-left .2s ease; display:inline-block; }
+.footer-col a:hover{ color:var(--emas-terang); padding-left:4px; }
 .footer-desc{ font-size:14px; color:rgba(255,253,247,.65); max-width:34ch; }
 .footer-bottom{
   border-top:1px solid rgba(255,255,255,.08);
@@ -792,12 +1015,13 @@ footer{
   nav.main-nav{ display:none; }
   .nav-toggle{ display:inline-flex; }
   .hero .wrap{ grid-template-columns:1fr; }
-  .hero-visual{ max-width:300px; }
+  .hero-visual{ max-width:480px; }
   .news-grid, .program-grid{ grid-template-columns:repeat(2,1fr); }
   .pimpinan-grid{ grid-template-columns:1fr; }
   .fact-strip .wrap{ grid-template-columns:repeat(2,1fr); }
   .fact{ border-bottom:1px solid var(--garis); }
-  .footer-grid{ grid-template-columns:1fr 1fr; }
+  .footer-grid{ grid-template-columns:1fr 1fr; row-gap:40px; }
+  .footer-grid > div:first-child{ grid-column:1 / -1; }
   .profil-grid{ grid-template-columns:1fr; }
   .profil-side{ position:static; }
   .bidang-grid{ grid-template-columns:1fr 1fr; }
@@ -806,11 +1030,30 @@ footer{
 @media (max-width: 620px){
   section{ padding:56px 0; }
   .news-grid, .program-grid{ grid-template-columns:1fr; }
-  .footer-grid{ grid-template-columns:1fr; padding:44px 0 24px; }
-  .cta-inner{ padding:44px 0; }
+  .footer-grid{
+    grid-template-columns:1fr;
+    padding:48px 0 28px;
+    text-align:center;
+    row-gap:34px;
+  }
+  .footer-grid > div:first-child{ grid-column:auto; }
+  .footer-brand{ justify-content:center; }
+  .footer-desc{ margin-left:auto; margin-right:auto; }
+  .profil-list{ justify-content:center; }
+  .footer-bottom{
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    gap:6px;
+  }
+  .cta-inner{ padding:44px 0; text-align:center; justify-content:center; }
+  .cta-inner div{ margin:0 auto; }
   .top-strip nav{ gap:12px; }
   .bidang-grid{ grid-template-columns:1fr; }
   .profil-photos{ grid-template-columns:1fr 1fr; }
+  .hero-visual{ max-width:100%; }
+  .carousel-arrow{ width:34px; height:34px; opacity:1; background:rgba(8,41,33,.5); }
+  .carousel-arrow svg{ width:15px; height:15px; }
 }
 </style>
 </head>
@@ -828,52 +1071,93 @@ footer{
       </span>
     </a>
     <nav class="main-nav">
-      <a href="#profil">Profil</a>
-      <a href="#warta">Warta</a>
-      <a href="#kepemimpinan">Pengurus</a>
-      <a href="#layanan">Layanan</a>
-      <a href="#artikel">Artikel</a>
-      <a href="#kontak">Kontak</a>
-    </nav>
+  <a href="#profil">Profil</a>
+  <a href="#warta">Berita</a>
+  <a href="#kepengurusan">Pengurus</a>
+
+  <!-- Dropdown Badan Otonom (Banom) -->
+  <div class="nav-dropdown">
+    <a href="javascript:void(0)" class="drop-btn">Badan Otonom</a>
+    <div class="dropdown-content">
+      <a href="#">Fatayat NU</a>
+      <a href="#">GP Ansor NU</a>
+      <a href="#">IPNU</a>
+      <a href="#">IPPNU</a>
+      <a href="#">Ishari NU</a>
+      <a href="#">ISNU</a>
+      <a href="#">Muslimat NU</a>
+      <a href="#">Pagar Nusa</a>
+      <a href="#">PMII</a>
+      <a href="#">Pergunu</a>
+    </div>
+  </div>
+  <div class="nav-dropdown">
+    <a href="javascript:void(0)" class="drop-btn">Lembaga</a>
+    <div class="dropdown-content">
+      <a href="#">Lakpesdam NU</a>
+      <a href="#">LAZISNU</a>
+      <a href="#">LDNU</a>
+      <a href="#">Lesbumi NU</a>
+      <a href="#">LFNU</a>
+      <a href="#">LKKNU</a>
+      <a href="#">LKNU</a>
+      <a href="#">LP Ma'arif NU</a>
+      <a href="#">LPBHNU</a>
+      <a href="#">LPBINU</a>
+      <a href="#">LPNU</a>
+      <a href="#">LPPNU</a>
+      <a href="#">LTNNU</a>
+    </div>
+  </div>
+
+  <a href="#layanan">Layanan</a>
+  <a href="#artikel">Artikel</a>
+  <a href="#kontak">Kontak</a>
+</nav>
     <button class="nav-toggle" aria-label="Buka menu">☰</button>
   </div>
 </header>
-
-<!-- ============ HERO ============ -->
 <section class="hero">
   <div class="wrap">
     <div>
-      <span class="eyebrow"><span class="motif-star"></span> Pengurus Cabang Nahdlatul Ulama</span>
-      <h1>Membersamai umat, <em>menjaga amanah</em> para muassis.</h1>
-      <p class="lead">Situs resmi PCNU Kota Pasuruan — kabar kegiatan, khidmah lembaga, dan program kemaslahatan umat dari Nahdlatul Ulama Kota Pasuruan.</p>
-      <div class="cta-row">
-        <a href="#warta" class="btn btn-emas">Baca Warta Terbaru</a>
-        <a href="#kepemimpinan" class="btn btn-ghost">Kenali Pengurus</a>
+      <span class="eyebrow" style="animation:fadeInUp .7s ease both;"><span class="motif-star"></span> Pengurus Cabang Nahdlatul Ulama</span>
+      <h1 style="animation:fadeInUp .7s ease .1s both;">Membersamai umat, <em>menjaga amanah</em> para muassis.</h1>
+      <p class="lead" style="animation:fadeInUp .7s ease .2s both;">Situs resmi PCNU Kota Pasuruan — kabar kegiatan, khidmah lembaga, dan program kemaslahatan umat dari Nahdlatul Ulama Kota Pasuruan.</p>
+      <div class="cta-row" style="animation:fadeInUp .7s ease .3s both;">
+        <a href="#warta" class="btn btn-emas">Berita Terbaru</a>
+        <a href="#profil" class="btn btn-ghost">Tentang PCNU</a>
       </div>
     </div>
-    <div class="hero-visual">
-      <div class="star-frame">
-        <div class="inner" id="heroVisual">
-          <div class="ph-fallback">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l2.6 5.1 5.6.9-4 4 1 5.6L12 15l-5.2 2.6 1-5.6-4-4 5.6-.9L12 2z" fill="currentColor"/></svg>
+
+    <!-- Carousel 3:2 — foto ditarik live dari /wp/v2/media?search=hero-img -->
+    <div class="hero-visual" style="animation:fadeInUp .8s ease .25s both;">
+      <div class="carousel-frame" id="heroCarousel">
+        <div class="carousel-track" id="heroCarouselTrack">
+          <div class="slide">
+            <div class="ph-fallback">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l2.6 5.1 5.6.9-4 4 1 5.6L12 15l-5.2 2.6 1-5.6-4-4 5.6-.9L12 2z" fill="currentColor"/></svg>
+            </div>
           </div>
         </div>
+        <button type="button" class="carousel-arrow prev" id="heroPrev" aria-label="Foto sebelumnya">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button type="button" class="carousel-arrow next" id="heroNext" aria-label="Foto berikutnya">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
       </div>
+      <div class="carousel-dots" id="heroCarouselDots"></div>
     </div>
   </div>
 </section>
-
-<!-- ============ FACT STRIP (angka nyata dari warta PCNU) ============ -->
 <div class="fact-strip">
   <div class="wrap">
-    <div class="fact"><strong>16</strong><span>PONDOK PESANTREN (RMI)</span></div>
-    <div class="fact"><strong>±3.000</strong><span>SISWA DI BAWAH LP MA'ARIF</span></div>
-    <div class="fact"><strong>±500</strong><span>TAKMIR MASJID (LTMNU)</span></div>
+    <div class="fact"><strong data-count-to="16" data-count-format="int">0</strong><span>PONDOK PESANTREN (RMI)</span></div>
+    <div class="fact"><strong data-count-to="3000" data-count-format="id" data-count-prefix="±">0</strong><span>SISWA DI BAWAH LP MA'ARIF</span></div>
+    <div class="fact"><strong data-count-to="500" data-count-format="id" data-count-prefix="±">0</strong><span>TAKMIR MASJID (LTMNU)</span></div>
     <div class="fact"><strong>2025–2030</strong><span>MASA KHIDMAT PENGURUS</span></div>
   </div>
 </div>
-
-<!-- ============ PROFIL ============ -->
 <section class="profil" id="profil">
   <div class="wrap profil-grid">
     <div class="profil-text">
@@ -887,15 +1171,13 @@ footer{
       </div>
 
       <div class="profil-block">
-        <h3><span class="motif-star"></span>Kepemimpinan & Khidmah</h3>
+        <h3><span class="motif-star"></span>Kepengurusan & Khidmah</h3>
         <p>Struktur PCNU Kota Pasuruan digerakkan oleh dua dewan utama: <strong>Syuriah</strong> (dewan penasihat/ulama) dan <strong>Tanfidziyah</strong> (dewan pelaksana harian). Ketua Tanfidziyah dipimpin oleh <strong>H. Mohammad Nailur Rohman</strong> ("Gus Amak"), cucu dari KH. Abdul Hamid. Di bawah kepemimpinannya, PCNU Kota Pasuruan membawa corak pergerakan yang dinamis dan adaptif terhadap perkembangan zaman.</p>
       </div>
-
       <div class="profil-block">
         <h3><span class="motif-star"></span>Fokus Gerakan & Pendekatan Strategis</h3>
         <p><strong>Pendekatan Milenial</strong> — merangkul generasi muda perkotaan lewat seni, hobi, dan media digital. <strong>Kemandirian Organisasi</strong> — menanamkan mentalitas khidmah yang mandiri demi mengawal program keumatan berkelanjutan. <strong>Penguatan Administrasi</strong> — sosialisasi berkala pedoman organisasi agar MWC hingga Ranting berjalan profesional dan terukur.</p>
       </div>
-
       <div class="profil-block">
         <h3><span class="motif-star"></span>Sinergi & Badan Otonom</h3>
         <p style="margin-bottom:14px;">Program-program PCNU Kota Pasuruan ditopang berbagai Badan Otonom dan lembaga, serta bersinergi aktif dengan Pemerintah Kota Pasuruan dan aparat keamanan.</p>
@@ -910,13 +1192,11 @@ footer{
           <span class="chip">LKKNU</span>
         </div>
       </div>
-
       <div class="profil-block" style="margin-bottom:0;">
         <h3><span class="motif-star"></span>Catatan</h3>
         <p>Di wilayah administrasi Pasuruan terdapat dua kepengurusan cabang NU: <strong>PCNU Kota Pasuruan</strong> (wilayah kota madya) dan <strong>PCNU Kabupaten Pasuruan</strong> (wilayah kabupaten). Keduanya sama-sama aktif bergerak selaras di bawah naungan PWNU Jawa Timur.</p>
       </div>
     </div>
-
     <div class="profil-side">
       <div class="profil-card">
         <span class="label">Kantor PCNU Kota Pasuruan</span>
@@ -932,27 +1212,22 @@ footer{
     </div>
   </div>
 </section>
-
-<!-- ============ WARTA (LIVE DARI REST API) ============ -->
 <section class="warta" id="warta">
   <div class="wrap">
     <div class="divider"><span>Kabar Terkini</span></div>
     <div class="section-head">
-      <h2>Warta PCNU Kota Pasuruan</h2>
-      <p>Diperbarui langsung dari sistem — laporan kegiatan, kerja sama, dan khidmah lembaga di lingkungan PCNU Kota Pasuruan.</p>
+      <h2>Seputar PCNU Kota Pasuruan</h2>
+      <p>Informasi terkini seputar kegiatan, kerja sama, dan khidmah warga Nahdliyin Kota Pasuruan.</p>
     </div>
     <div class="news-grid" id="newsGrid">
-      <!-- diisi JS: skeleton -> kartu berita -->
     </div>
   </div>
 </section>
-
-<!-- ============ KEPEMIMPINAN ============ -->
-<section class="kepemimpinan" id="kepemimpinan">
+<section class="kepengurusan" id="kepengurusan">
   <div class="wrap">
     <div class="divider"><span>Masa Khidmat 2025–2030</span></div>
     <div class="section-head">
-      <h2>Kepemimpinan</h2>
+      <h2>Kepengurusan</h2>
       <p>Nakhoda PCNU Kota Pasuruan hasil Konferensi Cabang ke-X.</p>
     </div>
     <div class="pimpinan-grid">
@@ -971,8 +1246,6 @@ footer{
     </div>
   </div>
 </section>
-
-<!-- ============ LAYANAN & KONSULTASI ============ -->
 <section class="layanan" id="layanan">
   <div class="wrap">
     <div class="divider"><span>Layanan & Konsultasi PCNU Kota Pasuruan</span></div>
@@ -980,7 +1253,6 @@ footer{
       <h2>Program Kegiatan</h2>
       <p>Masyarakat dapat berkonsultasi, menyampaikan aspirasi, maupun memperoleh informasi terkait program dan kegiatan badan otonom serta lembaga di lingkungan PCNU Kota Pasuruan sesuai jadwal bidang berikut.</p>
     </div>
-
     <div class="bidang-grid">
       <div class="bidang-card v1">
         <span class="kategori">Bidang Pengembangan</span>
@@ -1001,7 +1273,6 @@ footer{
         <a class="selengkapnya" href="https://www.facebook.com/lpnukopas/photos" target="_blank" rel="noopener">Selengkapnya</a>
       </div>
     </div>
-
     <div class="unggulan-strip">
       <div class="unggulan-item">
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h8M8 14h4"/></svg></div>
@@ -1022,8 +1293,6 @@ footer{
     </div>
   </div>
 </section>
-
-<!-- ============ PROGRAM ============ -->
 <section class="program" id="program">
   <div class="wrap">
     <div class="divider"><span>Liputan Kegiatan</span></div>
@@ -1065,34 +1334,28 @@ footer{
     </div>
   </div>
 </section>
-
-<!-- ============ ARTIKEL (LIVE DARI /wp/v2/posts) ============ -->
 <section class="warta" id="artikel">
   <div class="wrap">
-    <div class="divider"><span>Dari Blog</span></div>
+    <div class="divider"><span>Kajian & Fikrah</span></div>
     <div class="section-head">
-      <h2>Artikel</h2>
-      <p>Tulisan yang dipublikasikan lewat sistem blog situs ini — diperbarui otomatis dari sumber yang sama dengan Warta.</p>
+      <h2>Artikel Pilihan</h2>
+      <p>Catatan ilmiah, gagasan, serta ulasan seputar keislaman dan keorganisasian .</p>
     </div>
     <div class="news-grid" id="artikelGrid">
-      <!-- diisi JS: skeleton -> kartu artikel dari /wp/v2/posts -->
     </div>
   </div>
 </section>
 
-<!-- ============ CTA ============ -->
 <div class="cta-banner" id="kontak">
   <div class="wrap cta-inner">
     <div>
       <h2>Ingin bersilaturahmi atau berkolaborasi dengan PCNU Kota Pasuruan?</h2>
       <p>Pengurus, lembaga, banom, hingga warga Nahdliyin dapat menghubungi kantor PCNU Kota Pasuruan untuk informasi lebih lanjut.</p>
     </div>
-    <a href="https://pcnupasuruankota.id" target="_blank" rel="noopener" class="btn btn-emas">Kunjungi Situs Utama</a>
   </div>
 </div>
-
-<!-- ============ FOOTER ============ -->
 <footer>
+  <div class="footer-particles" id="footerParticles" aria-hidden="true"></div>
   <div class="wrap footer-grid">
     <div>
       <div class="footer-brand">
@@ -1105,8 +1368,8 @@ footer{
     <div class="footer-col">
       <h4>Jelajah</h4>
       <ul>
-        <li><a href="#warta">Warta</a></li>
-        <li><a href="#kepemimpinan">Kepemimpinan</a></li>
+        <li><a href="#warta">Berita</a></li>
+        <li><a href="#kepengurusan">Kepengurusan</a></li>
         <li><a href="#program">Program</a></li>
       </ul>
     </div>
@@ -1118,17 +1381,10 @@ footer{
         <li><a href="#program">LTMNU</a></li>
       </ul>
     </div>
-    <div class="footer-col">
-      <h4>Tautan</h4>
-      <ul>
-        <li><a href="https://pcnupasuruankota.id" target="_blank" rel="noopener">Situs Resmi</a></li>
-        <li><a href="https://pcnupasuruankota.id/wp-json/wp/v2/pages" target="_blank" rel="noopener">Arsip Warta</a></li>
-      </ul>
-    </div>
   </div>
   <div class="wrap footer-bottom">
-    <span>© <?php echo $tahun; ?> PCNU Kota Pasuruan.</span>
-    <span>Konten diperbarui otomatis dari WordPress REST API.</span>
+    <span>© <?php echo $tahun; ?> PCNU Kota Pasuruan. All rights reserved</span>
+    <span>Powered by LTN NU Kota Pasuruan.</span>
   </div>
 </footer>
 
@@ -1174,7 +1430,7 @@ footer{
           var judul = decodeEntities(data.name);
           document.getElementById("siteTitle").textContent = judul;
           document.getElementById("footerTitle").textContent = judul;
-          document.title = judul + " — Nahdlatul Ulama Cabang Kota Pasuruan";
+          document.title = judul;
         }
         if(data.description){
           document.getElementById("footerDesc").textContent = decodeEntities(data.description);
@@ -1205,35 +1461,113 @@ footer{
       .catch(function(err){ console.warn("Logo pakai ikon fallback:", err.message); });
   }
 
-  var heroImages = [];
-  var heroIndex = 0;
-  var heroTimer = null;
+  /* ---------------------------------------------------------
+     HERO CAROUSEL 3:2 — /wp/v2/media?search=hero-img
+     Foto hero-img1/2/3 diurutkan berdasarkan judul, lalu
+     dislide otomatis (translateX) dengan dot indicator.
+     --------------------------------------------------------- */
+  var heroSlideIndex = 0;
+  var heroSlideTimer = null;
 
-  function jalankanHeroSlideshow(urls){
-    var container = document.getElementById("heroVisual");
-    if(!container || !urls.length) return;
-    heroImages = urls.slice(0, 5);
-
-    heroImages.forEach(function(url, i){
-      var img = document.createElement("img");
-      img.src = url;
-      img.alt = "";
-      img.loading = "lazy";
-      if(i === 0) img.classList.add("active");
-      container.appendChild(img);
-    });
-
-    var fallback = container.querySelector(".ph-fallback");
-    if(fallback) fallback.style.display = "none";
-
-    if(heroImages.length > 1){
-      heroTimer = setInterval(function(){
-        var imgs = container.querySelectorAll("img");
-        imgs[heroIndex].classList.remove("active");
-        heroIndex = (heroIndex + 1) % imgs.length;
-        imgs[heroIndex].classList.add("active");
-      }, 4200);
+  function bangunDotHero(jumlah){
+    var wadahDot = document.getElementById("heroCarouselDots");
+    if(!wadahDot || jumlah <= 1) return;
+    var html = "";
+    for(var i = 0; i < jumlah; i++){
+      html += '<button type="button" class="' + (i === 0 ? "active" : "") + '" data-index="' + i + '" aria-label="Slide ' + (i + 1) + '"></button>';
     }
+    wadahDot.innerHTML = html;
+    wadahDot.querySelectorAll("button").forEach(function(tombol){
+      tombol.addEventListener("click", function(){
+        pindahKeSlideHero(parseInt(this.getAttribute("data-index"), 10));
+        aturUlangAutoplayHero(jumlah);
+      });
+    });
+  }
+
+  function perbaruiDotAktif(){
+    var wadahDot = document.getElementById("heroCarouselDots");
+    if(!wadahDot) return;
+    wadahDot.querySelectorAll("button").forEach(function(tombol, i){
+      tombol.classList.toggle("active", i === heroSlideIndex);
+    });
+  }
+
+  function pindahKeSlideHero(index){
+    var track = document.getElementById("heroCarouselTrack");
+    if(!track) return;
+    var totalSlide = track.children.length;
+    heroSlideIndex = ((index % totalSlide) + totalSlide) % totalSlide;
+    track.style.transform = "translateX(-" + (heroSlideIndex * 100) + "%)";
+    perbaruiDotAktif();
+  }
+
+  function aturUlangAutoplayHero(jumlah){
+    if(heroSlideTimer) clearInterval(heroSlideTimer);
+    if(jumlah <= 1) return;
+    heroSlideTimer = setInterval(function(){
+      pindahKeSlideHero(heroSlideIndex + 1);
+    }, 3800);
+  }
+
+  function pasangKontrolCarousel(){
+    var tombolPrev = document.getElementById("heroPrev");
+    var tombolNext = document.getElementById("heroNext");
+    var track = document.getElementById("heroCarouselTrack");
+    if(tombolPrev){
+      tombolPrev.addEventListener("click", function(){
+        pindahKeSlideHero(heroSlideIndex - 1);
+        aturUlangAutoplayHero(track ? track.children.length : 1);
+      });
+    }
+    if(tombolNext){
+      tombolNext.addEventListener("click", function(){
+        pindahKeSlideHero(heroSlideIndex + 1);
+        aturUlangAutoplayHero(track ? track.children.length : 1);
+      });
+    }
+  }
+
+  function muatHeroCarousel(){
+    fetch(API_ROOT + "wp/v2/media?search=hero-img&per_page=10")
+      .then(function(res){
+        if(!res.ok) throw new Error("Server merespons status " + res.status);
+        return res.json();
+      })
+      .then(function(daftarMedia){
+        if(!Array.isArray(daftarMedia) || daftarMedia.length === 0) return;
+
+        var gambar = daftarMedia
+          .filter(function(m){ return m.media_type === "image"; })
+          .sort(function(a, b){
+            var judulA = (a.title && a.title.rendered) || "";
+            var judulB = (b.title && b.title.rendered) || "";
+            return judulA.localeCompare(judulB);
+          })
+          .map(function(m){
+            var sizes = m.media_details && m.media_details.sizes;
+            return (sizes && sizes.medium_large && sizes.medium_large.source_url)
+              || (sizes && sizes.large && sizes.large.source_url)
+              || m.source_url;
+          })
+          .filter(Boolean);
+
+        if(!gambar.length) return;
+
+        var track = document.getElementById("heroCarouselTrack");
+        if(!track) return;
+
+        track.innerHTML = gambar.map(function(url){
+          return '<div class="slide"><img src="' + url + '" alt="Kegiatan PCNU Kota Pasuruan" loading="lazy"></div>';
+        }).join("");
+
+        bangunDotHero(gambar.length);
+        pindahKeSlideHero(0);
+        aturUlangAutoplayHero(gambar.length);
+      })
+      .catch(function(err){
+        console.warn("Carousel hero pakai ikon fallback:", err.message);
+      });
   }
 
  function ambilFeaturedImage(halaman){
@@ -1254,8 +1588,14 @@ footer{
     }catch(e){}
     return null;
   }
-
-  function kartuBeritaHTML(halaman, gambarUrl){
+  var warnaTagMap = {
+      "Bahtsul Masail": { bg: "#e0f2fe", text: "#0369a1" },
+      "Kalam":          { bg: "#fef3c7", text: "#b45309" },
+      "Khotbah":        { bg: "#dcfce7", text: "#15803d" },
+      "Tarbiyah Jinsiyah": { bg: "#fce7f3", text: "#be185d" },
+      "default":        { bg: "#f3f4f6", text: "#374151" }
+    };
+  function kartuBeritaHTML(halaman, gambarUrl, namaTag){
     var judul   = decodeEntities(halaman.title && halaman.title.rendered || "(Tanpa judul)");
     var excerpt = truncate(stripHtml(halaman.excerpt && halaman.excerpt.rendered || ""), 130);
     var tanggal = formatTanggal(halaman.date);
@@ -1265,10 +1605,17 @@ footer{
       ? '<img src="' + gambarUrl + '" alt="" loading="lazy">'
       : '<div class="ph-fallback">' + STAR_SVG + '</div>';
 
+    var badgeHtml = "";
+    if(namaTag){
+      var styleW = warnaTagMap[namaTag] || warnaTagMap["default"];
+      badgeHtml = '<span class="badge-tag" style="background-color: ' + styleW.bg + '; color: ' + styleW.text + '; padding: 3px 8px; border-radius: 12px; font-size: 10.5px; font-weight: 600; display: inline-block; margin-bottom: 6px;">' + namaTag + '</span>';
+    }
+
     return (
       '<article class="news-card">' +
         '<div class="news-thumb">' + thumb + '</div>' +
         '<div class="news-body">' +
+          badgeHtml +
           '<span class="news-date">' + tanggal + '</span>' +
           '<h3>' + judul + '</h3>' +
           '<p>' + excerpt + '</p>' +
@@ -1277,7 +1624,6 @@ footer{
       '</article>'
     );
   }
-
   function tampilkanSkeleton(grid, jumlah){
     var html = "";
     for(var i=0; i<jumlah; i++){
@@ -1321,18 +1667,13 @@ footer{
         }
 
         var kartuHtml = "";
-        var gambarTerkumpul = [];
-
         daftarItem.forEach(function(item){
           var gambar = ambilFeaturedImage(item);
-          if(gambar) gambarTerkumpul.push(gambar);
           kartuHtml += kartuBeritaHTML(item, gambar);
         });
 
         grid.innerHTML = kartuHtml;
-        if(opsi.isiHeroDariGambar && gambarTerkumpul.length){
-          jalankanHeroSlideshow(gambarTerkumpul);
-        }
+        daftarkanReveal(grid.querySelectorAll(".news-card"));
       })
       .catch(function(err){
         tampilkanErrorBerita(
@@ -1348,23 +1689,167 @@ footer{
       gridId: "newsGrid",
       endpoint: "wp/v2/pages?_embed&per_page=6&orderby=date&order=desc",
       jumlah: 6,
-      isiHeroDariGambar: true,
-      pesanKosong: "Belum ada warta yang bisa ditampilkan.",
-      pesanError: "Warta belum bisa dimuat",
+      pesanKosong: "Belum ada berita yang bisa ditampilkan.",
+      pesanError: "Berita belum bisa dimuat",
       retry: muatWarta
     });
   }
 
   function muatArtikel(){
-    muatKontenKartu({
-      gridId: "artikelGrid",
-      endpoint: "wp/v2/posts?_embed&per_page=6&orderby=date&order=desc",
-      jumlah: 3,
-      isiHeroDariGambar: false,
-      pesanKosong: "Belum ada artikel yang dipublikasikan lewat blog.",
-      pesanError: "Artikel belum bisa dimuat",
-      retry: muatArtikel
+    var grid = document.getElementById("artikelGrid");
+    if(!grid) return;
+    tampilkanSkeleton(grid, 3);
+
+    // 1. Tarik data Tags dan Posts (khusus kategori ID 7 = Artikel) secara bersamaan
+    Promise.all([
+      fetch(API_ROOT + "wp/v2/tags").then(res => res.json()).catch(() => []),
+      fetch(API_ROOT + "wp/v2/posts?_embed&categories=7&per_page=3&orderby=date&order=desc").then(res => {
+        if(!res.ok) throw new Error("Server merespons status " + res.status);
+        return res.json();
+      })
+    ])
+    .then(function(results){
+      var semuaTag = results[0];
+      var daftarItem = results[1];
+
+      // Buat kamus pencocokan ID Tag -> Nama Tag
+      var tagDict = {};
+      if(Array.isArray(semuaTag)){
+        semuaTag.forEach(function(tag){
+          tagDict[tag.id] = tag.name;
+        });
+      }
+
+      if(!Array.isArray(daftarItem) || daftarItem.length === 0){
+        tampilkanErrorBerita(grid, "Belum ada artikel yang dipublikasikan.", muatArtikel);
+        return;
+      }
+
+      var kartuHtml = "";
+      daftarItem.forEach(function(item){
+        var gambar = ambilFeaturedImage(item);
+
+        // Ambil nama tag pertama dari post ini (jika ada)
+        var namaTag = "";
+        if(item.tags && item.tags.length > 0){
+          namaTag = tagDict[item.tags[0]] || "";
+        }
+
+        kartuHtml += kartuBeritaHTML(item, gambar, namaTag);
+      });
+
+      grid.innerHTML = kartuHtml;
+      daftarkanReveal(grid.querySelectorAll(".news-card"));
+    })
+    .catch(function(err){
+      tampilkanErrorBerita(
+        grid,
+        "Artikel belum bisa dimuat (" + err.message + ").",
+        muatArtikel
+      );
     });
+  }
+  /* ---------------------------------------------------------
+     PARTIKEL FOOTER
+     --------------------------------------------------------- */
+  function buatPartikelFooter(){
+    var wadah = document.getElementById("footerParticles");
+    if(!wadah) return;
+    var jumlah = 22;
+    var html = "";
+    for(var i = 0; i < jumlah; i++){
+      var kiri = (Math.random() * 100).toFixed(1);
+      var ukuran = (Math.random() * 3 + 1.5).toFixed(1);
+      var durasi = (Math.random() * 10 + 9).toFixed(1);
+      var jeda = (Math.random() * 14).toFixed(1);
+      var geser = (Math.random() * 40 - 20).toFixed(0);
+      html += '<span style="left:' + kiri + '%;width:' + ukuran + 'px;height:' + ukuran + 'px;animation-duration:' + durasi + 's;animation-delay:' + jeda + 's;--drift:' + geser + 'px;"></span>';
+    }
+    wadah.innerHTML = html;
+  }
+
+  /* ---------------------------------------------------------
+     COUNT-UP ANGKA FAKTA
+     --------------------------------------------------------- */
+  function easeOutQuart(t){ return 1 - Math.pow(1 - t, 4); }
+
+  function animasiHitungAngka(elemen){
+    var target = parseFloat(elemen.getAttribute("data-count-to"));
+    if(isNaN(target)) return;
+    var format = elemen.getAttribute("data-count-format") || "int";
+    var prefix = elemen.getAttribute("data-count-prefix") || "";
+    var durasi = 1500;
+    var mulai = null;
+
+    function langkah(waktu){
+      if(mulai === null) mulai = waktu;
+      var progres = Math.min((waktu - mulai) / durasi, 1);
+      var nilai = Math.round(target * easeOutQuart(progres));
+      var teks = format === "id" ? nilai.toLocaleString("id-ID") : String(nilai);
+      elemen.textContent = prefix + teks;
+      if(progres < 1) requestAnimationFrame(langkah);
+    }
+    requestAnimationFrame(langkah);
+  }
+
+  function pasangCountUp(){
+    var elemenAngka = document.querySelectorAll("[data-count-to]");
+    if(!elemenAngka.length) return;
+    if(!("IntersectionObserver" in window)){
+      elemenAngka.forEach(animasiHitungAngka);
+      return;
+    }
+    var observer = new IntersectionObserver(function(entries, obs){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          animasiHitungAngka(entry.target);
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.5 });
+    elemenAngka.forEach(function(el){ observer.observe(el); });
+  }
+
+  /* ---------------------------------------------------------
+     SCROLL REVEAL
+     --------------------------------------------------------- */
+  var revealObserver = null;
+  function dapatkanRevealObserver(){
+    if(revealObserver) return revealObserver;
+    if(!("IntersectionObserver" in window)) return null;
+    revealObserver = new IntersectionObserver(function(entries, obs){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add("is-visible");
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.15, rootMargin:"0px 0px -60px 0px" });
+    return revealObserver;
+  }
+
+  function daftarkanReveal(elemenList){
+    var daftar = Array.prototype.slice.call(elemenList);
+    if(!daftar.length) return;
+    var observer = dapatkanRevealObserver();
+    daftar.forEach(function(el, i){
+      el.style.setProperty("--reveal-delay", Math.min(i * 70, 350) + "ms");
+      el.classList.add("reveal");
+      if(observer){ observer.observe(el); }
+      else { el.classList.add("is-visible"); }
+    });
+  }
+
+  function pasangScrollReveal(){
+    daftarkanReveal(document.querySelectorAll(".section-head"));
+    daftarkanReveal(document.querySelectorAll(".bidang-card"));
+    daftarkanReveal(document.querySelectorAll(".pimpinan-card"));
+    daftarkanReveal(document.querySelectorAll(".unggulan-item"));
+    daftarkanReveal(document.querySelectorAll(".profil-block"));
+    daftarkanReveal(document.querySelectorAll(".profil-card"));
+    daftarkanReveal(document.querySelectorAll(".profil-photos img"));
+    daftarkanReveal(document.querySelectorAll(".program-card"));
+    daftarkanReveal(document.querySelectorAll(".cta-inner > div"));
   }
 
   function pasangNavToggle(){
@@ -1387,9 +1872,14 @@ footer{
 
   document.addEventListener("DOMContentLoaded", function(){
     muatIdentitasSitus();
+    muatHeroCarousel();
     muatWarta();
     muatArtikel();
     pasangNavToggle();
+    pasangKontrolCarousel();
+    buatPartikelFooter();
+    pasangCountUp();
+    pasangScrollReveal();
   });
 })();
 </script>
