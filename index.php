@@ -361,19 +361,21 @@ nav.main-nav a:hover { color: var(--putih); }
 .carousel-frame:hover{
   box-shadow:0 46px 80px -28px rgba(8,41,33,.65), 0 0 0 1px rgba(227,183,90,.25), 0 0 0 10px rgba(227,183,90,.09);
 }
-.carousel-track{
-  position:relative;
-  height:100%;
-  width:100%;
+.carousel-track {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  transition: transform 0.85s cubic-bezier(0.65, 0.05, 0.36, 1);
+  will-change: transform;
 }
-.carousel-track .slide{
-  position:absolute;
-  inset:0;
-  opacity:0;
-  visibility:hidden;
-  transition:opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1), transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: scale(1.04);
-  z-index: 1;
+
+.carousel-track .slide {
+  flex: 0 0 100%;
+  height: 100%;
+  position: relative;
+  opacity: 1;
+  visibility: visible;
+  transform: none;
 }
 .carousel-track .slide.active{
   opacity:1;
@@ -1624,25 +1626,18 @@ footer{
     });
   }
 
-  function pindahKeSlideHero(index){
-    var track = document.getElementById("heroCarouselTrack");
-    if(!track) return;
-    var slides = track.querySelectorAll(".slide");
-    var totalSlide = slides.length;
-    if(totalSlide === 0) return;
+  function pindahKeSlideHero(index) {
+  var track = document.getElementById("heroCarouselTrack");
+  if (!track) return;
+  
+  var totalSlide = track.children.length;
+  if (totalSlide === 0) return;
 
-    heroSlideIndex = ((index % totalSlide) + totalSlide) % totalSlide;
+  heroSlideIndex = ((index % totalSlide) + totalSlide) % totalSlide;
+  track.style.transform = "translateX(-" + (heroSlideIndex * 100) + "%)";
 
-    slides.forEach(function(slide, i){
-      if(i === heroSlideIndex){
-        slide.classList.add("active");
-      } else {
-        slide.classList.remove("active");
-      }
-    });
-
-    perbaruiDotAktif();
-  }
+  perbaruiDotAktif();
+}
 
   function aturUlangAutoplayHero(jumlah){
     if(heroSlideTimer) clearInterval(heroSlideTimer);
@@ -1702,8 +1697,8 @@ footer{
         var track = document.getElementById("heroCarouselTrack");
         if(!track) return;
 
-        track.innerHTML = gambar.map(function(url, idx){
-          return '<div class="slide ' + (idx === 0 ? 'active' : '') + '"><img src="' + url + '" alt="Kegiatan PCNU Kota Pasuruan" loading="lazy"></div>';
+        track.innerHTML = gambar.map(function(url){
+          return '<div class="slide"><img src="' + url + '" alt="Kegiatan PCNU Kota Pasuruan" loading="lazy"></div>';
         }).join("");
 
         bangunDotHero(gambar.length);
