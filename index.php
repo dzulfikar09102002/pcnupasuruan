@@ -445,7 +445,20 @@ nav.main-nav a:hover { color: var(--putih); }
   width:24px;
   border-radius:6px;
 }
+#tahunKhidmat {
+  display: inline-block;
+  white-space: nowrap;
+  font-family: inherit; 
+  color: inherit;    
+  font-size: 1em;      
+}
 
+@media (max-width: 620px) {
+  #tahunKhidmat {
+    font-size: 0.75em;  
+    letter-spacing: -0.5px;
+  }
+}
 .fact-strip{
   background:linear-gradient(115deg, var(--emas-pucat) 0%, #EAD9A8 55%, var(--emas-pucat) 100%);
   border-bottom:1px solid var(--garis);
@@ -1277,7 +1290,10 @@ footer{
     <div class="fact"><strong data-count-to="16" data-count-format="int">0</strong><span>PONDOK PESANTREN (RMI)</span></div>
     <div class="fact"><strong data-count-to="3000" data-count-format="id" data-count-prefix="±">0</strong><span>SISWA DI BAWAH LP MA'ARIF</span></div>
     <div class="fact"><strong data-count-to="500" data-count-format="id" data-count-prefix="±">0</strong><span>TAKMIR MASJID (LTMNU)</span></div>
-    <div class="fact"><strong>2025 – 2030</strong><span>MASA KHIDMAT PENGURUS</span></div>
+    <div class="fact">
+      <strong><span id="tahunKhidmat">2025–2030</span></strong>
+      <span>MASA KHIDMAT PENGURUS</span>
+    </div>
   </div>
 </div>
 
