@@ -815,22 +815,6 @@ footer{
 </style>
 </head>
 <body>
-
-<!-- ============ TOP STRIP ============ -->
-<div class="top-strip">
-  <div class="wrap">
-    <span class="meta-loc">📍 Jl. Untung Suropati No.16, Kebonagung, Kota Pasuruan</span>
-    <nav>
-      <a href="#profil">Profil</a>
-      <a href="#warta">Warta</a>
-      <a href="#layanan">Layanan</a>
-      <a href="#artikel">Artikel</a>
-      <a href="#kontak">Kontak</a>
-    </nav>
-  </div>
-</div>
-
-<!-- ============ HEADER ============ -->
 <header class="site-header">
   <div class="wrap">
     <a class="brand" href="#" id="brandLink">
@@ -1179,10 +1163,6 @@ footer{
     ta.innerHTML = str || "";
     return ta.value;
   }
-
-  /* ---------------------------------------------------------
-     1) IDENTITAS SITUS (nama, tagline, logo) — dari root API
-     --------------------------------------------------------- */
   function muatIdentitasSitus(){
     fetch(API_ROOT, { headers:{ "Accept":"application/json" } })
       .then(function(res){
@@ -1225,9 +1205,6 @@ footer{
       .catch(function(err){ console.warn("Logo pakai ikon fallback:", err.message); });
   }
 
-  /* ---------------------------------------------------------
-     2) WARTA — /wp/v2/pages?_embed  (sesuai permintaan)
-     --------------------------------------------------------- */
   var heroImages = [];
   var heroIndex = 0;
   var heroTimer = null;
@@ -1259,10 +1236,21 @@ footer{
     }
   }
 
-  function ambilFeaturedImage(halaman){
+ function ambilFeaturedImage(halaman){
     try{
       var media = halaman._embedded && halaman._embedded["wp:featuredmedia"] && halaman._embedded["wp:featuredmedia"][0];
       if(media && media.source_url) return media.source_url;
+    }catch(e){}
+
+    try{
+      if(halaman.content && halaman.content.rendered){
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(halaman.content.rendered, 'text/html');
+        var gambarPertama = doc.querySelector('img');
+        if(gambarPertama && gambarPertama.src) {
+          return gambarPertama.src;
+        }
+      }
     }catch(e){}
     return null;
   }
@@ -1316,11 +1304,6 @@ footer{
     if(tombol) tombol.addEventListener("click", fungsiRetry);
   }
 
-  /**
-   * Fungsi umum: ambil daftar item (pages ATAU posts) dari REST API dan
-   * render sebagai kartu di dalam grid tertentu. Dipakai untuk Warta
-   * (endpoint wp/v2/pages) maupun Artikel (endpoint wp/v2/posts).
-   */
   function muatKontenKartu(opsi){
     var grid = document.getElementById(opsi.gridId);
     if(!grid) return;
@@ -1384,9 +1367,6 @@ footer{
     });
   }
 
-  /* ---------------------------------------------------------
-     3) Menu mobile sederhana
-     --------------------------------------------------------- */
   function pasangNavToggle(){
     var toggle = document.querySelector(".nav-toggle");
     var nav = document.querySelector("nav.main-nav");
