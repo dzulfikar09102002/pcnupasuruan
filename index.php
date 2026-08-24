@@ -959,41 +959,58 @@ section{ padding:80px 0; }
 }
 
 .galeri{ background:linear-gradient(180deg, #EFE7D2 0%, var(--kertas) 100%); overflow:hidden; }
-.galeri-wrap{
-  position:relative;
-  overflow:hidden;
-  border-radius:var(--radius);
+.galeri{ 
+  background:linear-gradient(180deg, #EFE7D2 0%, var(--kertas) 100%); 
+  overflow:hidden; 
 }
-.galeri-wrap::before,
-.galeri-wrap::after{
+
+/* Wadah statis penahan efek blur / fade */
+.galeri-container-outer{
+  position:relative;
+  width:100%;
+  overflow:hidden;
+}
+
+.galeri-container-outer::before,
+.galeri-container-outer::after{
   content:"";
   position:absolute;
   top:0; bottom:0;
-  width:80px;
-  z-index:3;
+  width:90px;
+  z-index:10;
   pointer-events:none;
 }
-.galeri-wrap::before{
+
+.galeri-container-outer::before{
   left:0;
-  background:linear-gradient(to right, var(--kertas), rgba(246,242,230,0));
+  background:linear-gradient(to right, #EFE7D2, rgba(239,231,210,0));
 }
-.galeri-wrap::after{
+
+.galeri-container-outer::after{
   right:0;
   background:linear-gradient(to left, var(--kertas), rgba(246,242,230,0));
 }
+
+.galeri-wrap{
+  position:relative;
+  overflow-x:auto;
+  overflow-y:hidden;
+  border-radius:var(--radius);
+  cursor:grab;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+.galeri-wrap::-webkit-scrollbar{ display:none; height:0; }
+.galeri-wrap.is-dragging{ cursor:grabbing; scroll-behavior:auto; user-select:none; }
+.galeri-item img{ -webkit-user-drag:none; user-drag:none; }
+
 .galeri-track{
   display:flex;
   gap:18px;
   width:max-content;
-  animation:galeriScroll 250s linear infinite;
 }
-.galeri-wrap:hover .galeri-track{
-  animation-play-state:paused;
-}
-@keyframes galeriScroll{
-  from{ transform:translateX(0); }
-  to{ transform:translateX(-50%); }
-}
+
 .galeri-item{
   flex:0 0 auto;
   width:280px;
@@ -1003,6 +1020,7 @@ section{ padding:80px 0; }
   border:1px solid var(--garis);
   position:relative;
   box-shadow:0 14px 26px -18px rgba(8,41,33,.35);
+  cursor:pointer;
 }
 .galeri-item img{
   width:100%; height:100%; object-fit:cover;
@@ -1025,10 +1043,75 @@ section{ padding:80px 0; }
   animation:shimmer 1.5s infinite;
 }
 
+/* ---------- Lightbox foto galeri ---------- */
+.lightbox{
+  position:fixed;
+  inset:0;
+  z-index:200;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:40px;
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .3s ease, visibility .3s ease;
+}
+.lightbox.is-open{
+  opacity:1;
+  visibility:visible;
+}
+.lightbox-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(8,41,33,.9);
+  backdrop-filter:blur(3px);
+}
+.lightbox-img{
+  position:relative;
+  max-width:min(90vw, 1100px);
+  max-height:85vh;
+  width:auto;
+  height:auto;
+  border-radius:10px;
+  box-shadow:0 40px 80px -20px rgba(0,0,0,.65), 0 0 0 1px rgba(227,183,90,.15);
+  transform:scale(.92);
+  transition:transform .35s cubic-bezier(.16, 1, .3, 1);
+  z-index:2;
+}
+.lightbox.is-open .lightbox-img{
+  transform:scale(1);
+}
+.lightbox-close{
+  position:absolute;
+  top:22px;
+  right:22px;
+  width:44px; height:44px;
+  border-radius:50%;
+  border:1px solid rgba(255,253,247,.3);
+  background:rgba(8,41,33,.55);
+  backdrop-filter:blur(4px);
+  color:var(--putih);
+  display:flex; align-items:center; justify-content:center;
+  z-index:3;
+  transition:background .2s ease, border-color .2s ease, transform .2s ease;
+}
+.lightbox-close svg{ width:19px; height:19px; }
+.lightbox-close:hover{
+  background:var(--emas);
+  color:var(--hijau-deep);
+  border-color:var(--emas);
+  transform:scale(1.07);
+}
+body.lightbox-open{ overflow:hidden; }
+
+@media (max-width: 620px){
+  .lightbox{ padding:20px; }
+  .lightbox-close{ top:14px; right:14px; width:38px; height:38px; }
+}
+
 @media (max-width: 620px){
   .galeri-item{ width:220px; height:160px; }
   .galeri-skel{ width:220px; height:160px; }
-  .galeri-track{ animation-duration:250s; }
 }
 /* ============================================================
    FOOTER
@@ -1464,10 +1547,22 @@ footer{
       <p>Momen-momen kegiatan PCNU Kota Pasuruan bersama lembaga, badan otonom, dan warga Nahdliyin.</p>
     </div>
   </div>
-  <div class="galeri-wrap">
-    <div class="galeri-track" id="galeriTrack"></div>
+  
+  <!-- Wadah Luar Penahan Efek Fade Kiri & Kanan -->
+  <div class="galeri-container-outer">
+    <div class="galeri-wrap" id="galeriWrap" tabindex="0" role="region" aria-label="Galeri foto, geser untuk melihat lebih banyak">
+      <div class="galeri-track" id="galeriTrack"></div>
+    </div>
   </div>
 </section>
+
+<div class="lightbox" id="fotoLightbox" aria-hidden="true">
+  <div class="lightbox-backdrop" id="lightboxBackdrop"></div>
+  <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Tutup">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <img class="lightbox-img" id="lightboxImg" src="" alt="Pratinjau foto">
+</div>
 <section class="kepengurusan" id="kepengurusan">
   <div class="wrap">
     <div class="divider"><span>Masa Khidmat 2025–2030</span></div>
@@ -1717,9 +1812,6 @@ footer{
       .catch(function(err){ console.warn("Logo pakai ikon fallback:", err.message); });
   }
 
-  /* ---------------------------------------------------------
-     HERO CAROUSEL Smooth Crossfade
-     --------------------------------------------------------- */
   var heroSlideIndex = 0;
   var heroSlideTimer = null;
 
@@ -1851,23 +1943,18 @@ footer{
   }
 
   var warnaTagMap = {
-    // --- Kategori Eksisting ---
-    "Bahtsul Masail":    { bg: "#e0f2fe", text: "#0369a1" }, // Sky Blue
-    "Kalam":             { bg: "#fef3c7", text: "#b45309" }, // Amber / Emas
-    "Khotbah":           { bg: "#dcfce7", text: "#15803d" }, // Emerald / Hijau
-    "Tarbiyah Jinsiyah": { bg: "#fce7f3", text: "#be185d" }, // Rose / Pink
-
-    // --- Tambahan Kategori Baru ---
-    "Hikayat":           { bg: "#fef9c3", text: "#854d0e" }, // Warm Yellow / Gold Klasik
-    "Opini":             { bg: "#ede9fe", text: "#6d28d9" }, // Purple / Ungu
-    "Fikrah":            { bg: "#ffedd5", text: "#c2410c" }, // Orange Hangat
-    "Pesantren":         { bg: "#ccfbf1", text: "#0f766e" }, // Teal
-    "Sejarah":           { bg: "#fae8ff", text: "#86198f" }, // Fuchsia
-    "Sosial":            { bg: "#fee2e2", text: "#b91c1c" }, // Soft Red
-    "Ekonomi":           { bg: "#e0e7ff", text: "#3730a3" }, // Indigo
-    "Pendidikan":        { bg: "#dbeafe", text: "#1d4ed8" }, // Blue
-
-    // --- Fallback default ---
+    "Bahtsul Masail":    { bg: "#e0f2fe", text: "#0369a1" }, 
+    "Kalam":             { bg: "#fef3c7", text: "#b45309" }, 
+    "Khotbah":           { bg: "#dcfce7", text: "#15803d" }, 
+    "Tarbiyah Jinsiyah": { bg: "#fce7f3", text: "#be185d" }, 
+    "Hikayat":           { bg: "#fef9c3", text: "#854d0e" }, 
+    "Opini":             { bg: "#ede9fe", text: "#6d28d9" }, 
+    "Fikrah":            { bg: "#ffedd5", text: "#c2410c" },
+    "Pesantren":         { bg: "#ccfbf1", text: "#0f766e" }, 
+    "Sejarah":           { bg: "#fae8ff", text: "#86198f" },
+    "Sosial":            { bg: "#fee2e2", text: "#b91c1c" },
+    "Ekonomi":           { bg: "#e0e7ff", text: "#3730a3" },
+    "Pendidikan":        { bg: "#dbeafe", text: "#1d4ed8" },
     "default": { bg: "#ecfdf5", text: "#047857" }
   };
 
@@ -1901,7 +1988,7 @@ footer{
     );
   }
 function galeriKartuHTML(url){
-    return '<div class="galeri-item"><img src="' + url + '" alt="Dokumentasi kegiatan PCNU Kota Pasuruan" loading="lazy"></div>';
+    return '<div class="galeri-item"><img src="' + url + '" alt="Dokumentasi kegiatan PCNU Kota Pasuruan" loading="lazy" draggable="false"></div>';
 }
 
 function ambilSemuaGambarKonten(htmlContent){
@@ -2012,82 +2099,139 @@ function tampilkanSkeleton(grid, jumlah){
     }
     grid.innerHTML = html;
   }
-function tampilkanSkeleton(grid, jumlah){
+
+  /* ---------------------------------------------------------
+     GALERI: AUTO-SCROLL BERJALAN TERUS + BISA DISCROLL MANUAL
+     --------------------------------------------------------- */
+  var GALERI_DURASI_MS   = 250000; // 250 detik untuk menempuh satu set foto
+  var GALERI_JEDA_RESUME = 2200;   // jeda sebelum auto-scroll lanjut lagi setelah user berinteraksi
+
+  var galeriRAF        = null;
+  var galeriJedaSampai  = 0;
+  var galeriWaktuLalu   = null;
+
+  function tundaAutoScrollGaleri(){
+    galeriJedaSampai = performance.now() + GALERI_JEDA_RESUME;
+  }
+
+  function jalankanAutoScrollGaleri(){
+    var wrap  = document.getElementById("galeriWrap");
     var track = document.getElementById("galeriTrack");
-    if(!track) return;
+    if(!wrap || !track) return;
+    if(galeriRAF) cancelAnimationFrame(galeriRAF);
 
-    var skelHtml = "";
-    for(var i = 0; i < 6; i++){ skelHtml += '<div class="galeri-skel"></div>'; }
-    track.innerHTML = skelHtml;
-    track.style.animation = "none";
+    function langkah(waktu){
+      galeriRAF = requestAnimationFrame(langkah);
 
-    fetch(API_ROOT + "wp/v2/media?search=galeri-img&per_page=20&media_type=image")
-      .then(function(res){
-        if(!res.ok) throw new Error("Server merespons status " + res.status);
-        return res.json();
-      })
-      .then(function(daftarMedia){
-        var gambar = (Array.isArray(daftarMedia) ? daftarMedia : [])
-          .filter(function(m){ return m.media_type === "image"; })
-          .map(function(m){
-            var sizes = m.media_details && m.media_details.sizes;
-            return (sizes && sizes.medium_large && sizes.medium_large.source_url)
-              || (sizes && sizes.large && sizes.large.source_url)
-              || m.source_url;
-          })
-          .filter(Boolean);
+      if(galeriWaktuLalu === null) galeriWaktuLalu = waktu;
+      var delta = waktu - galeriWaktuLalu;
+      galeriWaktuLalu = waktu;
 
-        if(!gambar.length){
-          // fallback: pakai foto hero-img yang sama biar galeri tetap terisi
-          return fetch(API_ROOT + "wp/v2/media?search=hero-img&per_page=20&media_type=image")
-            .then(function(res2){ return res2.ok ? res2.json() : []; })
-            .then(function(fallbackMedia){
-              return (Array.isArray(fallbackMedia) ? fallbackMedia : [])
-                .filter(function(m){ return m.media_type === "image"; })
-                .map(function(m){
-                  var sizes = m.media_details && m.media_details.sizes;
-                  return (sizes && sizes.medium_large && sizes.medium_large.source_url)
-                    || (sizes && sizes.large && sizes.large.source_url)
-                    || m.source_url;
-                })
-                .filter(Boolean);
-            });
-        }
-        return gambar;
-      })
-      .then(function(gambarFinal){
-        if(!gambarFinal || !gambarFinal.length){
-          track.innerHTML = '<div class="galeri-item"><div class="ph-fallback">' + STAR_SVG + '</div></div>';
-          track.style.animation = "none";
-          return;
-        }
+      // Berhenti sejenak kalau user sedang aktif berinteraksi (drag/scroll manual)
+      if(performance.now() < galeriJedaSampai) return;
 
-        // Duplikasi 2x supaya marquee loop mulus tanpa jeda
-        var setGanda = gambarFinal.concat(gambarFinal);
-        track.innerHTML = setGanda.map(galeriKartuHTML).join("");
-        track.style.animation = "";
-      })
-      .catch(function(err){
-        console.warn("Galeri belum bisa dimuat:", err.message);
-        track.innerHTML = '<div class="galeri-item"><div class="ph-fallback">' + STAR_SVG + '</div></div>';
-        track.style.animation = "none";
-      });
-}
-  
-function tampilkanSkeleton(grid, jumlah){
-    var html = "";
-    for(var i=0; i<jumlah; i++){
-      html +=
-        '<article class="news-card">' +
-          '<div class="news-thumb news-skel"></div>' +
-          '<div class="news-body">' +
-            '<div class="news-skel" style="height:11px;width:40%;border-radius:4px;"></div>' +
-            '<div class="news-skel" style="height:20px;width:90%;border-radius:4px;margin-top:4px;"></div>' +
-            '<div class="news-skel" style="height:14px;width:100%;border-radius:4px;margin-top:6px;"></div>' +
-          '</div>' +
-        '</article>';
+      var setLebar = track.scrollWidth / 2;
+      if(!setLebar || setLebar <= 0) return;
+
+      var kecepatanPerMs = setLebar / GALERI_DURASI_MS;
+      wrap.scrollLeft += kecepatanPerMs * delta;
+
+      // Set foto digandakan 2x supaya loop terasa mulus tanpa jeda
+      if(wrap.scrollLeft >= setLebar){
+        wrap.scrollLeft -= setLebar;
+      }
     }
-    grid.innerHTML = html;
+    galeriRAF = requestAnimationFrame(langkah);
+  }
+
+  function pasangInteraksiManualGaleri(){
+    var wrap = document.getElementById("galeriWrap");
+    if(!wrap) return;
+
+    var sedangDrag  = false;
+    var sudahGeser  = false;
+    var mulaiX      = 0;
+    var mulaiScroll = 0;
+
+    wrap.addEventListener("wheel", tundaAutoScrollGaleri, { passive:true });
+    wrap.addEventListener("touchstart", tundaAutoScrollGaleri, { passive:true });
+    wrap.addEventListener("touchmove", tundaAutoScrollGaleri, { passive:true });
+    wrap.addEventListener("keydown", function(e){
+      if(["ArrowLeft","ArrowRight","Home","End"].indexOf(e.key) !== -1){
+        tundaAutoScrollGaleri();
+      }
+    });
+
+    // Drag pakai mouse (klik-tahan-geser) untuk pengguna desktop
+    wrap.addEventListener("mousedown", function(e){
+      sedangDrag = true;
+      sudahGeser = false;
+      wrap.classList.add("is-dragging");
+      mulaiX = e.pageX - wrap.offsetLeft;
+      mulaiScroll = wrap.scrollLeft;
+      tundaAutoScrollGaleri();
+    });
+
+    window.addEventListener("mousemove", function(e){
+      if(!sedangDrag) return;
+      var x = e.pageX - wrap.offsetLeft;
+      var jarak = x - mulaiX;
+      if(Math.abs(jarak) > 4) sudahGeser = true;
+      e.preventDefault();
+      wrap.scrollLeft = mulaiScroll - jarak * 1.15;
+      tundaAutoScrollGaleri();
+    });
+
+    window.addEventListener("mouseup", function(){
+      if(!sedangDrag) return;
+      sedangDrag = false;
+      wrap.classList.remove("is-dragging");
+      tundaAutoScrollGaleri();
+    });
+
+    // Cegah klik "nyangkut" jadi buka lightbox kalau user barusan drag/geser
+    wrap.addEventListener("click", function(e){
+      if(sudahGeser){
+        e.stopPropagation();
+        e.preventDefault();
+        sudahGeser = false;
+      }
+    }, true);
+  }
+
+  function pasangLightboxGaleri(){
+    var track      = document.getElementById("galeriTrack");
+    var lightbox   = document.getElementById("fotoLightbox");
+    var lbImg      = document.getElementById("lightboxImg");
+    var tombolTutup = document.getElementById("lightboxClose");
+    var backdrop   = document.getElementById("lightboxBackdrop");
+    if(!track || !lightbox || !lbImg) return;
+
+    function bukaLightbox(src, alt){
+      lbImg.src = src;
+      lbImg.alt = alt || "Pratinjau foto";
+      lightbox.classList.add("is-open");
+      lightbox.setAttribute("aria-hidden", "false");
+      document.body.classList.add("lightbox-open");
+    }
+
+    function tutupLightbox(){
+      lightbox.classList.remove("is-open");
+      lightbox.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("lightbox-open");
+    }
+
+    track.addEventListener("click", function(e){
+      var img = e.target.closest ? e.target.closest(".galeri-item img") : null;
+      if(!img) return;
+      bukaLightbox(img.src, img.alt);
+    });
+
+    if(tombolTutup) tombolTutup.addEventListener("click", tutupLightbox);
+    if(backdrop) backdrop.addEventListener("click", tutupLightbox);
+    document.addEventListener("keydown", function(e){
+      if(e.key === "Escape") tutupLightbox();
+    });
   }
 
   function tampilkanErrorBerita(grid, pesan, fungsiRetry){
@@ -2377,16 +2521,13 @@ function tampilkanSkeleton(grid, jumlah){
               if(other !== parentDropdown){
                 other.classList.remove("is-active");
               }
-            });
-            
-            // Buka atau Tutup dropdown yang diklik (Toggle On/Off)
+            });   
             parentDropdown.classList.toggle("is-active");
           }
         }
       });
     });
 
-    // 3. Klik di Luar Menu (Blank space / area halaman) akan Menutup Menu Mobile
     document.addEventListener("click", function(e){
       if(window.innerWidth <= 980){
         if(!nav.contains(e.target) && !toggle.contains(e.target)){
@@ -2412,6 +2553,9 @@ function tampilkanSkeleton(grid, jumlah){
     pasangScrollReveal();
     pasangSmoothAnchorNav();
     pasangBackToTop();
+    pasangInteraksiManualGaleri();
+    pasangLightboxGaleri();
+    jalankanAutoScrollGaleri();
 });
 })();
 </script>
