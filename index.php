@@ -1931,12 +1931,11 @@ function muatGaleri(){
     track.innerHTML = skelHtml;
     track.style.animation = "none";
 
-    Promise.all([
-        fetch(API_ROOT + "wp/v2/pages?_embed&per_page=50&orderby=date&order=desc").then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
-        fetch(API_ROOT + "wp/v2/posts?_embed&per_page=50&orderby=date&order=desc").then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })
-    ])
-    .then(function(hasil){
-        var semuaItem = [].concat(hasil[0] || [], hasil[1] || []);
+    fetch(API_ROOT + "wp/v2/pages?_embed&per_page=50&orderby=date&order=desc")
+    .then(function(r){ return r.ok ? r.json() : []; })
+    .catch(function(){ return []; })
+    .then(function(semuaItem){
+        semuaItem = Array.isArray(semuaItem) ? semuaItem : [];
 
         semuaItem.sort(function(a, b){
             return new Date(b.date) - new Date(a.date);
@@ -1985,6 +1984,21 @@ function muatGaleri(){
     });
 }
 
+function tampilkanSkeleton(grid, jumlah){
+    var html = "";
+    for(var i=0; i<jumlah; i++){
+      html +=
+        '<article class="news-card">' +
+          '<div class="news-thumb news-skel"></div>' +
+          '<div class="news-body">' +
+            '<div class="news-skel" style="height:11px;width:40%;border-radius:4px;"></div>' +
+            '<div class="news-skel" style="height:20px;width:90%;border-radius:4px;margin-top:4px;"></div>' +
+            '<div class="news-skel" style="height:14px;width:100%;border-radius:4px;margin-top:6px;"></div>' +
+          '</div>' +
+        '</article>';
+    }
+    grid.innerHTML = html;
+  }
 function tampilkanSkeleton(grid, jumlah){
     var track = document.getElementById("galeriTrack");
     if(!track) return;
