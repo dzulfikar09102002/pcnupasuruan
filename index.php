@@ -1851,11 +1851,24 @@ footer{
   }
 
   var warnaTagMap = {
-    "Bahtsul Masail": { bg: "#e0f2fe", text: "#0369a1" },
-    "Kalam":          { bg: "#fef3c7", text: "#b45309" },
-    "Khotbah":        { bg: "#dcfce7", text: "#15803d" },
-    "Tarbiyah Jinsiyah": { bg: "#fce7f3", text: "#be185d" },
-    "default":        { bg: "#f3f4f6", text: "#374151" }
+    // --- Kategori Eksisting ---
+    "Bahtsul Masail":    { bg: "#e0f2fe", text: "#0369a1" }, // Sky Blue
+    "Kalam":             { bg: "#fef3c7", text: "#b45309" }, // Amber / Emas
+    "Khotbah":           { bg: "#dcfce7", text: "#15803d" }, // Emerald / Hijau
+    "Tarbiyah Jinsiyah": { bg: "#fce7f3", text: "#be185d" }, // Rose / Pink
+
+    // --- Tambahan Kategori Baru ---
+    "Hikayat":           { bg: "#fef9c3", text: "#854d0e" }, // Warm Yellow / Gold Klasik
+    "Opini":             { bg: "#ede9fe", text: "#6d28d9" }, // Purple / Ungu
+    "Fikrah":            { bg: "#ffedd5", text: "#c2410c" }, // Orange Hangat
+    "Pesantren":         { bg: "#ccfbf1", text: "#0f766e" }, // Teal
+    "Sejarah":           { bg: "#fae8ff", text: "#86198f" }, // Fuchsia
+    "Sosial":            { bg: "#fee2e2", text: "#b91c1c" }, // Soft Red
+    "Ekonomi":           { bg: "#e0e7ff", text: "#3730a3" }, // Indigo
+    "Pendidikan":        { bg: "#dbeafe", text: "#1d4ed8" }, // Blue
+
+    // --- Fallback default ---
+    "default": { bg: "#ecfdf5", text: "#047857" }
   };
 
   function kartuBeritaHTML(halaman, gambarUrl, namaTag){
@@ -2135,11 +2148,11 @@ function tampilkanSkeleton(grid, jumlah){
   function muatArtikel(){
     var grid = document.getElementById("artikelGrid");
     if(!grid) return;
-    tampilkanSkeleton(grid, 3);
+    tampilkanSkeleton(grid, 6);
 
     Promise.all([
       fetch(API_ROOT + "wp/v2/tags").then(res => res.json()).catch(() => []),
-      fetch(API_ROOT + "wp/v2/posts?_embed&categories=7&per_page=3&orderby=date&order=desc").then(res => {
+      fetch(API_ROOT + "wp/v2/posts?_embed&categories=7&per_page=6&orderby=date&order=desc").then(res => {
         if(!res.ok) throw new Error("Server merespons status " + res.status);
         return res.json();
       })
