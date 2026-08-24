@@ -278,6 +278,21 @@ nav.main-nav a:hover { color: var(--putih); }
   overflow:hidden;
   padding:72px 0 96px;
 }
+.hero-pattern{
+  position:absolute;
+  inset:-10%;
+  z-index:0;
+  opacity:.09;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cg fill='%23E3B75A'%3E%3Cpath transform='translate(20,25) scale(0.9)' d='M12 0 L14.6 4.8 L19.7 1.9 L18.7 7.2 L24 7.9 L20.2 11.5 L24 15.1 L18.7 16.3 L19.7 21.6 L14.6 18.7 L12 24 L9.4 18.7 L4.3 21.6 L5.3 16.3 L0 15.1 L3.8 11.5 L0 7.9 L5.3 7.2 L4.3 1.9 L9.4 4.8 Z'/%3E%3Cpath transform='translate(95,60) scale(0.55) rotate(18 12 12)' d='M12 0 L14.6 4.8 L19.7 1.9 L18.7 7.2 L24 7.9 L20.2 11.5 L24 15.1 L18.7 16.3 L19.7 21.6 L14.6 18.7 L12 24 L9.4 18.7 L4.3 21.6 L5.3 16.3 L0 15.1 L3.8 11.5 L0 7.9 L5.3 7.2 L4.3 1.9 L9.4 4.8 Z'/%3E%3Cpath transform='translate(55,110) scale(0.7) rotate(-12 12 12)' d='M12 0 L14.6 4.8 L19.7 1.9 L18.7 7.2 L24 7.9 L20.2 11.5 L24 15.1 L18.7 16.3 L19.7 21.6 L14.6 18.7 L12 24 L9.4 18.7 L4.3 21.6 L5.3 16.3 L0 15.1 L3.8 11.5 L0 7.9 L5.3 7.2 L4.3 1.9 L9.4 4.8 Z'/%3E%3Cpath transform='translate(130,130) scale(0.4) rotate(30 12 12)' d='M12 0 L14.6 4.8 L19.7 1.9 L18.7 7.2 L24 7.9 L20.2 11.5 L24 15.1 L18.7 16.3 L19.7 21.6 L14.6 18.7 L12 24 L9.4 18.7 L4.3 21.6 L5.3 16.3 L0 15.1 L3.8 11.5 L0 7.9 L5.3 7.2 L4.3 1.9 L9.4 4.8 Z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size:160px 160px;
+  background-repeat:repeat;
+  pointer-events:none;
+  animation:heroPatternDrift 90s linear infinite;
+}
+@keyframes heroPatternDrift{
+  from{ transform:translate(0,0); }
+  to{ transform:translate(-160px,-160px); }
+}
 .hero::before{
   content:"";
   position:absolute; inset:0;
@@ -357,9 +372,14 @@ nav.main-nav a:hover { color: var(--putih); }
   background:var(--hijau-deep);
   box-shadow:0 40px 70px -30px rgba(8,41,33,.6), 0 0 0 1px rgba(227,183,90,.18), 0 0 0 8px rgba(227,183,90,.06);
   transition:box-shadow .35s ease;
+  animation:frameGlow 6s ease-in-out infinite;
 }
 .carousel-frame:hover{
   box-shadow:0 46px 80px -28px rgba(8,41,33,.65), 0 0 0 1px rgba(227,183,90,.25), 0 0 0 10px rgba(227,183,90,.09);
+}
+@keyframes frameGlow{
+  0%,100%{ box-shadow:0 40px 70px -30px rgba(8,41,33,.6), 0 0 0 1px rgba(227,183,90,.18), 0 0 0 8px rgba(227,183,90,.06); }
+  50%{ box-shadow:0 40px 70px -30px rgba(8,41,33,.6), 0 0 0 1px rgba(227,183,90,.28), 0 0 0 14px rgba(227,183,90,.10); }
 }
 .carousel-track {
   display: flex;
@@ -938,6 +958,78 @@ section{ padding:80px 0; }
   font-size:14.5px;
 }
 
+.galeri{ background:linear-gradient(180deg, #EFE7D2 0%, var(--kertas) 100%); overflow:hidden; }
+.galeri-wrap{
+  position:relative;
+  overflow:hidden;
+  border-radius:var(--radius);
+}
+.galeri-wrap::before,
+.galeri-wrap::after{
+  content:"";
+  position:absolute;
+  top:0; bottom:0;
+  width:80px;
+  z-index:3;
+  pointer-events:none;
+}
+.galeri-wrap::before{
+  left:0;
+  background:linear-gradient(to right, var(--kertas), rgba(246,242,230,0));
+}
+.galeri-wrap::after{
+  right:0;
+  background:linear-gradient(to left, var(--kertas), rgba(246,242,230,0));
+}
+.galeri-track{
+  display:flex;
+  gap:18px;
+  width:max-content;
+  animation:galeriScroll 250s linear infinite;
+}
+.galeri-wrap:hover .galeri-track{
+  animation-play-state:paused;
+}
+@keyframes galeriScroll{
+  from{ transform:translateX(0); }
+  to{ transform:translateX(-50%); }
+}
+.galeri-item{
+  flex:0 0 auto;
+  width:280px;
+  height:200px;
+  border-radius:10px;
+  overflow:hidden;
+  border:1px solid var(--garis);
+  position:relative;
+  box-shadow:0 14px 26px -18px rgba(8,41,33,.35);
+}
+.galeri-item img{
+  width:100%; height:100%; object-fit:cover;
+  transition:transform .5s cubic-bezier(.16, 1, .3, 1);
+}
+.galeri-item:hover img{ transform:scale(1.08); }
+.galeri-item .ph-fallback{
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--emas-terang); opacity:.4;
+  background:var(--hijau-deep);
+}
+.galeri-item .ph-fallback svg{ width:24%; height:24%; }
+.galeri-skel{
+  width:280px; height:200px;
+  border-radius:10px;
+  flex:0 0 auto;
+  background:linear-gradient(100deg, var(--kertas-tua) 30%, var(--putih) 50%, var(--kertas-tua) 70%);
+  background-size:200% 100%;
+  animation:shimmer 1.5s infinite;
+}
+
+@media (max-width: 620px){
+  .galeri-item{ width:220px; height:160px; }
+  .galeri-skel{ width:220px; height:160px; }
+  .galeri-track{ animation-duration:250s; }
+}
 /* ============================================================
    FOOTER
    ============================================================ */
@@ -1253,6 +1345,7 @@ footer{
 </header>
 
 <section class="hero">
+   <div class="hero-pattern" aria-hidden="true"></div>
   <div class="wrap wrap-hero">
     <div>
       <span class="eyebrow" style="animation:fadeInUp .7s ease both;"><span class="motif-star"></span> Pengurus Cabang Nahdlatul Ulama</span>
@@ -1263,6 +1356,7 @@ footer{
         <a href="#profil" class="btn btn-ghost">Tentang PCNU</a>
       </div>
     </div>
+
 
     <div class="hero-visual" style="animation:fadeInUp .8s ease .25s both;">
       <div class="carousel-frame" id="heroCarousel">
@@ -1362,7 +1456,18 @@ footer{
     <div class="news-grid" id="newsGrid"></div>
   </div>
 </section>
-
+<section class="galeri" id="galeri">
+  <div class="wrap">
+    <div class="divider"><span>Dokumentasi</span></div>
+    <div class="section-head">
+      <h2>Galeri Kegiatan</h2>
+      <p>Momen-momen kegiatan PCNU Kota Pasuruan bersama lembaga, badan otonom, dan warga Nahdliyin.</p>
+    </div>
+  </div>
+  <div class="galeri-wrap">
+    <div class="galeri-track" id="galeriTrack"></div>
+  </div>
+</section>
 <section class="kepengurusan" id="kepengurusan">
   <div class="wrap">
     <div class="divider"><span>Masa Khidmat 2025–2030</span></div>
@@ -1782,8 +1887,167 @@ footer{
       '</article>'
     );
   }
+function galeriKartuHTML(url){
+    return '<div class="galeri-item"><img src="' + url + '" alt="Dokumentasi kegiatan PCNU Kota Pasuruan" loading="lazy"></div>';
+}
 
-  function tampilkanSkeleton(grid, jumlah){
+function ambilSemuaGambarKonten(htmlContent){
+    if(!htmlContent) return [];
+    try{
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(htmlContent, 'text/html');
+        var imgs = doc.querySelectorAll('img');
+        return Array.prototype.map.call(imgs, function(img){
+            return img.getAttribute('src');
+        }).filter(Boolean);
+    }catch(e){
+        return [];
+    }
+}
+
+function fetchGambarDariMediaLibrary(query){
+    return fetch(API_ROOT + "wp/v2/media?" + query)
+      .then(function(res){ return res.ok ? res.json() : []; })
+      .then(function(daftarMedia){
+        return (Array.isArray(daftarMedia) ? daftarMedia : [])
+          .filter(function(m){ return m.media_type === "image"; })
+          .map(function(m){
+            var sizes = m.media_details && m.media_details.sizes;
+            return (sizes && sizes.medium_large && sizes.medium_large.source_url)
+              || (sizes && sizes.large && sizes.large.source_url)
+              || m.source_url;
+          })
+          .filter(Boolean);
+      })
+      .catch(function(){ return []; });
+}
+
+function muatGaleri(){
+    var track = document.getElementById("galeriTrack");
+    if(!track) return;
+
+    var skelHtml = "";
+    for(var i = 0; i < 6; i++){ skelHtml += '<div class="galeri-skel"></div>'; }
+    track.innerHTML = skelHtml;
+    track.style.animation = "none";
+
+    Promise.all([
+        fetch(API_ROOT + "wp/v2/pages?_embed&per_page=50&orderby=date&order=desc").then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
+        fetch(API_ROOT + "wp/v2/posts?_embed&per_page=50&orderby=date&order=desc").then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })
+    ])
+    .then(function(hasil){
+        var semuaItem = [].concat(hasil[0] || [], hasil[1] || []);
+
+        semuaItem.sort(function(a, b){
+            return new Date(b.date) - new Date(a.date);
+        });
+
+        var semuaGambar = [];
+
+        semuaItem.forEach(function(item){
+            var featured = ambilFeaturedImage(item);
+            if(featured) semuaGambar.push(featured);
+
+            if(item.content && item.content.rendered){
+                var gambarKonten = ambilSemuaGambarKonten(item.content.rendered);
+                semuaGambar = semuaGambar.concat(gambarKonten);
+            }
+        });
+
+        var gambarUnik = semuaGambar.filter(function(url, index){
+            return semuaGambar.indexOf(url) === index;
+        });
+
+        if(gambarUnik.length) return gambarUnik;
+
+        return fetchGambarDariMediaLibrary("per_page=30&media_type=image&orderby=date&order=desc");
+    })
+    .then(function(gambarFinal){
+        if(!gambarFinal || !gambarFinal.length){
+            track.innerHTML = '<div class="galeri-item"><div class="ph-fallback">' + STAR_SVG + '</div></div>';
+            track.style.animation = "none";
+            return;
+        }
+
+        var gambarDipadatkan = gambarFinal.slice();
+        while(gambarDipadatkan.length < 10 && gambarFinal.length > 0){
+            gambarDipadatkan = gambarDipadatkan.concat(gambarFinal);
+        }
+
+        var setGanda = gambarDipadatkan.concat(gambarDipadatkan);
+        track.innerHTML = setGanda.map(galeriKartuHTML).join("");
+        track.style.animation = "";
+    })
+    .catch(function(err){
+        console.warn("Galeri belum bisa dimuat:", err.message);
+        track.innerHTML = '<div class="galeri-item"><div class="ph-fallback">' + STAR_SVG + '</div></div>';
+        track.style.animation = "none";
+    });
+}
+
+function tampilkanSkeleton(grid, jumlah){
+    var track = document.getElementById("galeriTrack");
+    if(!track) return;
+
+    var skelHtml = "";
+    for(var i = 0; i < 6; i++){ skelHtml += '<div class="galeri-skel"></div>'; }
+    track.innerHTML = skelHtml;
+    track.style.animation = "none";
+
+    fetch(API_ROOT + "wp/v2/media?search=galeri-img&per_page=20&media_type=image")
+      .then(function(res){
+        if(!res.ok) throw new Error("Server merespons status " + res.status);
+        return res.json();
+      })
+      .then(function(daftarMedia){
+        var gambar = (Array.isArray(daftarMedia) ? daftarMedia : [])
+          .filter(function(m){ return m.media_type === "image"; })
+          .map(function(m){
+            var sizes = m.media_details && m.media_details.sizes;
+            return (sizes && sizes.medium_large && sizes.medium_large.source_url)
+              || (sizes && sizes.large && sizes.large.source_url)
+              || m.source_url;
+          })
+          .filter(Boolean);
+
+        if(!gambar.length){
+          // fallback: pakai foto hero-img yang sama biar galeri tetap terisi
+          return fetch(API_ROOT + "wp/v2/media?search=hero-img&per_page=20&media_type=image")
+            .then(function(res2){ return res2.ok ? res2.json() : []; })
+            .then(function(fallbackMedia){
+              return (Array.isArray(fallbackMedia) ? fallbackMedia : [])
+                .filter(function(m){ return m.media_type === "image"; })
+                .map(function(m){
+                  var sizes = m.media_details && m.media_details.sizes;
+                  return (sizes && sizes.medium_large && sizes.medium_large.source_url)
+                    || (sizes && sizes.large && sizes.large.source_url)
+                    || m.source_url;
+                })
+                .filter(Boolean);
+            });
+        }
+        return gambar;
+      })
+      .then(function(gambarFinal){
+        if(!gambarFinal || !gambarFinal.length){
+          track.innerHTML = '<div class="galeri-item"><div class="ph-fallback">' + STAR_SVG + '</div></div>';
+          track.style.animation = "none";
+          return;
+        }
+
+        // Duplikasi 2x supaya marquee loop mulus tanpa jeda
+        var setGanda = gambarFinal.concat(gambarFinal);
+        track.innerHTML = setGanda.map(galeriKartuHTML).join("");
+        track.style.animation = "";
+      })
+      .catch(function(err){
+        console.warn("Galeri belum bisa dimuat:", err.message);
+        track.innerHTML = '<div class="galeri-item"><div class="ph-fallback">' + STAR_SVG + '</div></div>';
+        track.style.animation = "none";
+      });
+}
+  
+function tampilkanSkeleton(grid, jumlah){
     var html = "";
     for(var i=0; i<jumlah; i++){
       html +=
@@ -1846,8 +2110,8 @@ footer{
   function muatWarta(){
     muatKontenKartu({
       gridId: "newsGrid",
-      endpoint: "wp/v2/pages?_embed&per_page=6&orderby=date&order=desc",
-      jumlah: 6,
+      endpoint: "wp/v2/pages?_embed&per_page=9&orderby=date&order=desc",
+      jumlah: 9,
       pesanKosong: "Belum ada berita yang bisa ditampilkan.",
       pesanError: "Berita belum bisa dimuat",
       retry: muatWarta
@@ -2113,6 +2377,7 @@ footer{
     muatHeroCarousel();
     muatWarta();
     muatArtikel();
+    muatGaleri();
     pasangNavToggle();
     pasangKontrolCarousel();
     buatPartikelFooter();
@@ -2120,7 +2385,7 @@ footer{
     pasangScrollReveal();
     pasangSmoothAnchorNav();
     pasangBackToTop();
-  });
+});
 })();
 </script>
 </body>
