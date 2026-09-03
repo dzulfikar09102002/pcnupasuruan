@@ -137,7 +137,7 @@ $baseUrl = './';
     <div class="divider"><span>Dokumentasi</span></div>
     <div class="section-head">
       <h2>Galeri Kegiatan</h2>
-      <p>Momen-momen kegiatan PCNU Kota Pasuruan bersama lembaga, badan otonom, dan warga Nahdliyin. Foto diambil otomatis dari Media WordPress yang namanya mengandung kata "galeri".</p>
+      <p>Momen-momen kegiatan PCNU Kota Pasuruan bersama lembaga, badan otonom, dan warga Nahdliyin.</p>
     </div>
   </div>
 
