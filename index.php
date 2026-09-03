@@ -389,17 +389,6 @@ $baseUrl = './';
       });
   }
 
-  /* ---------------------------------------------------------
-     GALERI: gabungan dua sumber.
-     1) Cara lama (tetap jalan seperti semula): ambil gambar
-        featured + gambar di dalam konten seluruh Pages.
-     2) Cara baru (tambahan): ambil dari Media Library yang
-        nama file/judulnya mengandung kata "galeri" (mis.
-        galeri-santunan-1.jpg) — admin tinggal upload, otomatis
-        nongol di sini tanpa sentuh kode.
-     Kalau dua-duanya kosong, baru fallback ke Media Library
-     umum (media_type=image) seperti versi lama.
-     --------------------------------------------------------- */
   function ambilGambarDariPages(){
     return fetch(API_ROOT + "wp/v2/pages?_embed&per_page=50&orderby=date&order=desc")
       .then(function(r){ return r.ok ? r.json() : []; })
@@ -410,10 +399,13 @@ $baseUrl = './';
 
         var semuaGambar = [];
         semuaItem.forEach(function(item){
+          var tanggalItem = new Date(item.date);
           var featured = ambilFeaturedImage(item);
-          if(featured) semuaGambar.push(featured);
+          if(featured) semuaGambar.push({ url: featured, tanggal: tanggalItem });
           if(item.content && item.content.rendered){
-            semuaGambar = semuaGambar.concat(ambilSemuaGambarKonten(item.content.rendered));
+            ambilSemuaGambarKonten(item.content.rendered).forEach(function(url){
+              semuaGambar.push({ url: url, tanggal: tanggalItem });
+            });
           }
         });
         return semuaGambar;
@@ -431,12 +423,19 @@ $baseUrl = './';
 
     Promise.all([
       ambilGambarDariPages(),
-      fetchGambarDariMediaLibrary("search=galeri&per_page=100&orderby=date&order=desc")
+      fetchGambarDenganTanggalDariMediaLibrary("search=galeri&per_page=100&orderby=date&order=desc")
     ])
     .then(function(hasil){
       var gabungan = hasil[0].concat(hasil[1]);
-      var gambarUnik = gabungan.filter(function(url, index){
-        return url && gabungan.indexOf(url) === index;
+      gabungan.sort(function(a, b){ return b.tanggal - a.tanggal; });
+
+      var urlSudahAda = {};
+      var gambarUnik = [];
+      gabungan.forEach(function(item){
+        if(item.url && !urlSudahAda[item.url]){
+          urlSudahAda[item.url] = true;
+          gambarUnik.push(item.url);
+        }
       });
 
       if(gambarUnik.length) return gambarUnik;
