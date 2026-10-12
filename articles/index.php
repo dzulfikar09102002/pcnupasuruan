@@ -28,11 +28,17 @@ $baseUrl = '../';
     </div>
     <h1>Kajian & Fikrah — Artikel Pilihan</h1>
     <p>Catatan ilmiah, gagasan, serta ulasan seputar keislaman dan keorganisasian dari PCNU Kota Pasuruan.</p>
+    <form class="form-cari form-cari-hero" action="" method="get" role="search">
+      <input type="search" name="s" placeholder="Cari artikel…" aria-label="Kata kunci pencarian" value="<?php echo isset($_GET['s']) ? htmlspecialchars($_GET['s'], ENT_QUOTES, 'UTF-8') : ''; ?>">
+      <button type="submit">Cari</button>
+    </form>
   </div>
 </section>
 
 <section class="warta">
   <div class="wrap">
+    <div class="filter-topik" id="filterTopik" aria-label="Filter topik"></div>
+    <div class="filter-info" id="artikelInfo" hidden></div>
     <div class="news-grid" id="artikelGrid"></div>
     <div class="pagination" id="artikelPagination"></div>
   </div>
@@ -50,9 +56,12 @@ document.addEventListener("DOMContentLoaded", function(){
     endpoint: "wp/v2/posts?categories=7",
     perPage: 12,
     pakaiTag: true,
+    pakaiUrl: true,
+    infoId: "artikelInfo",
     pesanKosong: "Belum ada artikel yang dipublikasikan.",
     pesanError: "Artikel belum bisa dimuat"
   });
+  muatFilterTopik("filterTopik");
 });
 </script>
 </body>

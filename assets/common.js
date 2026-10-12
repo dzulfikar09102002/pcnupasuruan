@@ -1,4 +1,10 @@
 var API_ROOT = "https://pcnupasuruankota.id/wp-json/";
+// Root situs ini (folder tempat assets/ berada), dihitung dari src script ini
+// supaya link ke halaman baca benar dari halaman mana pun.
+var BASE_URL = (function () {
+  var s = document.currentScript && document.currentScript.src;
+  return s ? s.replace(/assets\/common\.js(\?.*)?$/, "") : "./";
+})();
 var STAR_SVG =
   '<svg viewBox="0 0 24 24" fill="none"><path d="M12 2l2.6 5.1 5.6.9-4 4 1 5.6L12 15l-5.2 2.6 1-5.6-4-4 5.6-.9L12 2z" fill="currentColor"/></svg>';
 var ARROW_SVG =
@@ -126,6 +132,12 @@ function ambilFeaturedImage(halaman) {
   return null;
 }
 
+/* Halaman baca lokal: WP page → news/baca.php, WP post → articles/baca.php */
+function urlBaca(item) {
+  var folder = item.type === "page" ? "news/" : "articles/";
+  return BASE_URL + folder + "baca.php?slug=" + encodeURIComponent(item.slug);
+}
+
 function kartuBeritaHTML(halaman, gambarUrl, namaTag) {
   var judul = decodeEntities(
     (halaman.title && halaman.title.rendered) || "(Tanpa judul)",
@@ -135,7 +147,7 @@ function kartuBeritaHTML(halaman, gambarUrl, namaTag) {
     130,
   );
   var tanggal = formatTanggal(halaman.date);
-  var link = halaman.link || "#";
+  var link = halaman.slug ? urlBaca(halaman) : halaman.link || "#";
 
   var thumb = gambarUrl
     ? '<img src="' + gambarUrl + '" alt="" loading="lazy">'
@@ -149,30 +161,34 @@ function kartuBeritaHTML(halaman, gambarUrl, namaTag) {
       styleW.bg +
       "; color: " +
       styleW.text +
-      '; padding: 3px 8px; border-radius: 12px; font-size: 10.5px; font-weight: 600; display: inline-block; margin-bottom: 6px;">' +
+      ';">' +
       namaTag +
       "</span>";
   }
 
   return (
     '<article class="news-card">' +
-    '<div class="news-thumb">' +
+    '<a class="news-thumb" href="' +
+    link +
+    '" tabindex="-1" aria-hidden="true">' +
     thumb +
-    "</div>" +
+    "</a>" +
     '<div class="news-body">' +
     badgeHtml +
     '<span class="news-date">' +
     tanggal +
     "</span>" +
-    "<h3>" +
-    judul +
-    "</h3>" +
+    '<h3><a href="' +
+    link +
+    '">' +
+    judul.replace(/</g, "&lt;") +
+    "</a></h3>" +
     "<p>" +
-    excerpt +
+    excerpt.replace(/</g, "&lt;") +
     "</p>" +
     '<a class="news-link" href="' +
     link +
-    '" target="_blank" rel="noopener">Baca selengkapnya ' +
+    '">Baca selengkapnya ' +
     ARROW_SVG +
     "</a>" +
     "</div>" +
@@ -453,7 +469,8 @@ function initTemaBersama() {
    DAFTAR BERPAGINASI (dipakai oleh /news dan /articles)
    opsi = {
      gridId, paginationId, endpoint ("wp/v2/pages" atau "wp/v2/posts?categories=7"),
-     perPage, pakaiTag (bool), pesanKosong, pesanError, halamanAwal
+     perPage, pakaiTag (bool), pesanKosong, pesanError, halamanAwal,
+     pakaiUrl (bool: baca/tulis ?s=, ?tag=, ?hal= di URL), infoId
    }
    --------------------------------------------------------- */
 function muatDaftarBerpaginasi(opsi) {
@@ -461,12 +478,46 @@ function muatDaftarBerpaginasi(opsi) {
   var pagWrap = opsi.paginationId
     ? document.getElementById(opsi.paginationId)
     : null;
+  var info = opsi.infoId ? document.getElementById(opsi.infoId) : null;
   if (!grid) return;
 
   var halamanSekarang = opsi.halamanAwal || 1;
   var perPage = opsi.perPage || 12;
   var tagDict = {};
   var tagSudahDiambil = false;
+  var kataKunci = "";
+  var tagId = 0;
+
+  if (opsi.pakaiUrl) {
+    var params = new URLSearchParams(window.location.search);
+    kataKunci = (params.get("s") || "").trim();
+    tagId = parseInt(params.get("tag") || "0", 10) || 0;
+    halamanSekarang = parseInt(params.get("hal") || "", 10) || halamanSekarang;
+  }
+
+  function perbaruiUrl() {
+    if (!opsi.pakaiUrl || !window.history.replaceState) return;
+    var params = new URLSearchParams(window.location.search);
+    if (halamanSekarang > 1) params.set("hal", halamanSekarang);
+    else params.delete("hal");
+    var qs = params.toString();
+    window.history.replaceState(null, "", window.location.pathname + (qs ? "?" + qs : ""));
+  }
+
+  function tampilkanInfo(total) {
+    if (!info) return;
+    if (!kataKunci && !tagId) {
+      info.hidden = true;
+      return;
+    }
+    var bagian = [];
+    if (kataKunci) bagian.push("kata kunci <strong>“" + kataKunci.replace(/</g, "&lt;") + "”</strong>");
+    if (tagId) bagian.push("topik <strong>" + (tagDict[tagId] || "#" + tagId) + "</strong>");
+    info.innerHTML =
+      "<span>" + (total === null ? "Mencari" : total + " hasil") + " untuk " + bagian.join(" dan ") + "</span>" +
+      '<a href="' + window.location.pathname + '">Hapus filter ×</a>';
+    info.hidden = false;
+  }
 
   function ambilTagJikaPerlu() {
     if (!opsi.pakaiTag || tagSudahDiambil) return Promise.resolve();
@@ -542,6 +593,8 @@ function muatDaftarBerpaginasi(opsi) {
           hal !== halamanSekarang
         ) {
           render(hal);
+          var atas = grid.getBoundingClientRect().top + window.scrollY - 110;
+          window.scrollTo({ top: Math.max(atas, 0), behavior: "smooth" });
         }
       });
     });
@@ -549,8 +602,10 @@ function muatDaftarBerpaginasi(opsi) {
 
   function render(halaman) {
     halamanSekarang = halaman;
+    perbaruiUrl();
     tampilkanSkeleton(grid, perPage);
     if (pagWrap) pagWrap.innerHTML = "";
+    tampilkanInfo(null);
 
     ambilTagJikaPerlu()
       .then(function () {
@@ -563,22 +618,38 @@ function muatDaftarBerpaginasi(opsi) {
           perPage +
           "&page=" +
           halaman +
-          "&orderby=date&order=desc";
+          "&orderby=" +
+          (kataKunci ? "relevance" : "date") +
+          "&order=desc" +
+          (kataKunci ? "&search=" + encodeURIComponent(kataKunci) : "") +
+          (tagId ? "&tags=" + tagId : "");
         return fetch(url).then(function (res) {
+          // Nomor halaman di URL melebihi jumlah halaman → kembali ke halaman 1.
+          if (res.status === 400 && halaman > 1) return { ulang: true };
           if (!res.ok) throw new Error("Server merespons status " + res.status);
           var totalPages =
             parseInt(res.headers.get("X-WP-TotalPages") || "1", 10) || 1;
+          var total = parseInt(res.headers.get("X-WP-Total") || "0", 10) || 0;
           return res.json().then(function (data) {
-            return { data: data, totalPages: totalPages };
+            return { data: data, totalPages: totalPages, total: total };
           });
         });
       })
       .then(function (hasil) {
+        if (hasil.ulang) {
+          render(1);
+          return;
+        }
+        tampilkanInfo(hasil.total);
         var daftarItem = hasil.data;
         if (!Array.isArray(daftarItem) || daftarItem.length === 0) {
-          tampilkanErrorBerita(grid, opsi.pesanKosong, function () {
-            render(1);
-          });
+          tampilkanErrorBerita(
+            grid,
+            kataKunci || tagId ? "Tidak ada tulisan yang cocok. Coba kata kunci lain." : opsi.pesanKosong,
+            function () {
+              render(1);
+            },
+          );
           return;
         }
 
@@ -608,4 +679,32 @@ function muatDaftarBerpaginasi(opsi) {
   }
 
   render(halamanSekarang);
+}
+
+/* ---------------------------------------------------------
+   FILTER TOPIK (chip tag di halaman /articles)
+   --------------------------------------------------------- */
+function muatFilterTopik(wadahId) {
+  var wadah = document.getElementById(wadahId);
+  if (!wadah) return;
+  var params = new URLSearchParams(window.location.search);
+  var tagAktif = parseInt(params.get("tag") || "0", 10) || 0;
+
+  fetch(API_ROOT + "wp/v2/tags?per_page=30&hide_empty=true&orderby=count&order=desc&_fields=id,name,count")
+    .then(function (r) {
+      return r.ok ? r.json() : [];
+    })
+    .then(function (semuaTag) {
+      if (!Array.isArray(semuaTag) || !semuaTag.length) return;
+      var html =
+        '<a class="chip' + (tagAktif ? "" : " aktif") + '" href="' + window.location.pathname + '">Semua</a>';
+      semuaTag.forEach(function (tag) {
+        html +=
+          '<a class="chip' + (tag.id === tagAktif ? " aktif" : "") + '" href="?tag=' + tag.id + '">' +
+          decodeEntities(tag.name).replace(/</g, "&lt;") +
+          " <small>" + tag.count + "</small></a>";
+      });
+      wadah.innerHTML = html;
+    })
+    .catch(function () {});
 }

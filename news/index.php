@@ -28,11 +28,16 @@ $baseUrl = '../';
     </div>
     <h1>Seluruh Berita PCNU Kota Pasuruan</h1>
     <p>Kumpulan lengkap kabar kegiatan, kerja sama, dan khidmah warga Nahdliyin Kota Pasuruan — diperbarui langsung dari WordPress.</p>
+    <form class="form-cari form-cari-hero" action="" method="get" role="search">
+      <input type="search" name="s" placeholder="Cari berita…" aria-label="Kata kunci pencarian" value="<?php echo isset($_GET['s']) ? htmlspecialchars($_GET['s'], ENT_QUOTES, 'UTF-8') : ''; ?>">
+      <button type="submit">Cari</button>
+    </form>
   </div>
 </section>
 
 <section class="warta">
   <div class="wrap">
+    <div class="filter-info" id="newsInfo" hidden></div>
     <div class="news-grid" id="newsGrid"></div>
     <div class="pagination" id="newsPagination"></div>
   </div>
@@ -50,6 +55,8 @@ document.addEventListener("DOMContentLoaded", function(){
     endpoint: "wp/v2/pages",
     perPage: 12,
     pakaiTag: false,
+    pakaiUrl: true,
+    infoId: "newsInfo",
     pesanKosong: "Belum ada berita yang bisa ditampilkan.",
     pesanError: "Berita belum bisa dimuat"
   });

@@ -1,0 +1,41 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Overview
+
+Website front-end for PCNU Kota Pasuruan (Pengurus Cabang Nahdlatul Ulama). It is a headless front-end over the WordPress REST API at `https://pcnupasuruankota.id/wp-json/`. There is no database, no build step, no package manager, and no tests. Two rendering modes coexist:
+
+- **Client-side** (homepage, listing pages): PHP outputs static markup; vanilla JS in `assets/common.js` (`API_ROOT`) fetches content in the browser.
+- **Server-side** (reading pages `news/baca.php`, `articles/baca.php`): PHP fetches WP JSON via `inc/wp.php` and renders the full article, so titles/OG meta work for sharing (WhatsApp/Facebook).
+
+UI text, identifiers, and comments are in Indonesian (e.g. `muatArtikel`, `tampilkanSkeleton`, `kartuBeritaHTML`). Keep this convention.
+
+## Running locally
+
+Served by Laragon from `C:\laragon\www\pcnupasuruan` (typically `http://pcnupasuruan.test/`). Alternatively `php -S localhost:8000` from the repo root. Needs internet access (live WordPress) and the PHP `curl` extension. Lint PHP with `php -l <file>`.
+
+## Structure
+
+- `index.php` — homepage. Static sections plus a large inline `<script>` IIFE that loads hero carousel, news, gallery, and articles from WP.
+- `news/index.php`, `articles/index.php` — listings via `muatDaftarBerpaginasi({...})`; support `?s=` (search), `?tag=` (articles only), `?hal=` (page) in the URL.
+- `news/baca.php`, `articles/baca.php` — thin entry files setting `$jenis` and including `partials/single.php` (the single-post template: content, share, author box, prev/next, related posts, threaded comments, sidebar). Wrong-type slugs 301 to the right folder; unknown slugs return 404.
+- `inc/wp.php` — server-side WP client: `wp_get()` / `wp_get_banyak()` (parallel `curl_multi`), file cache in `sys_get_temp_dir()/pcnu-wp-cache` (5 min TTL), plus render helpers (`kartu_berita_html`, `url_baca`, `format_tanggal_id`, `warna_tag`).
+- `api/komentar.php` — comment submission proxy (see below).
+- `partials/header.php`, `partials/footer.php` — shared nav/footer.
+- `assets/common.js` — shared client helpers; `initTemaBersama()` must be called on each page. `assets/baca.js` — reading-page interactions (progress bar, TOC, lightbox, copy link, AJAX comment form/replies).
+- `assets/theme.css` — single stylesheet; design tokens in `:root` (`--hijau`, `--emas`, `--kertas`, fonts Lora / Plus Jakarta Sans / Space Mono). Reading-page styles are at the end.
+- `indexOld.php` — legacy homepage kept for reference; not linked. Don't edit unless asked.
+
+## Key conventions
+
+- **`$baseUrl`**: every page sets it (`'./'` at root, `'../'` in subdirectories) before including partials; internal links and assets are prefixed with it. In JS, `BASE_URL` is derived from the `common.js` script src.
+- **WordPress content mapping**:
+  - "Berita" = WP **pages** (`wp/v2/pages`) → `news/baca.php?slug=…`.
+  - "Artikel" = WP **posts in category 7** → `articles/baca.php?slug=…`; first tag shown as a colored badge.
+  - Link building must go through `urlBaca()` (JS) / `url_baca()` (PHP), which route by `item.type`.
+  - Hero images = media search `hero-img`; gallery = media search `galeri`.
+- **Card markup is duplicated** in `kartuBeritaHTML()` (JS) and `kartu_berita_html()` (PHP); tag colors in `warnaTagMap` (JS) and `warna_tag()` (PHP). Change both together.
+- **Comments**: WP REST rejects anonymous comments (`rest_comment_login_required`), so `api/komentar.php` forwards to `wp-comments-post.php` and interprets the redirect (`unapproved=` = awaiting moderation). It also invalidates the comments cache using `wp_query_komentar()`, which must stay the query used in `single.php`. Comments only show a form when the WP item's `comment_status` is `open` (WP pages currently default to closed).
+- The WP author account name is an email address; `single.php` replaces any author name containing `@` with "Redaksi PCNU Kota Pasuruan". Never output the raw author name.
+- JS is ES5-style (`var`, `function`, promise chains, no modules/bundler); keep new code consistent with that.
