@@ -12,13 +12,14 @@ $tahun = date('Y');
       </div>
       <p class="footer-desc" id="footerDesc">Pengurus Cabang Nahdlatul Ulama Kota Pasuruan — membersamai umat lewat khidmah lembaga dan program kemaslahatan.</p>
       <p class="footer-desc" style="margin-top:12px;">📍 Jl. Untung Suropati No.16, Kebonagung, Kec. Purworejo, Kota Pasuruan, Jawa Timur 67116</p>
+      <?php include __DIR__ . '/sosial.php'; ?>
     </div>
     <div class="footer-col">
       <h4>Jelajah</h4>
       <ul>
         <li><a href="<?php echo $baseUrl; ?>news/">Berita</a></li>
         <li><a href="<?php echo $baseUrl; ?>#kepengurusan">Kepengurusan</a></li>
-        <li><a href="<?php echo $baseUrl; ?>#program">Program</a></li>
+        <li><a href="<?php echo $baseUrl; ?>program/">Program Kegiatan</a></li>
       </ul>
     </div>
     <div class="footer-col">

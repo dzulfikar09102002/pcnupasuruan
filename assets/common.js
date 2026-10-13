@@ -21,6 +21,16 @@ function truncate(text, max) {
   return text.slice(0, max).replace(/\s+\S*$/, "") + "…";
 }
 
+/* Waktu objek WP (post/page/komentar) sebagai ISO UTC yang pasti. Field `date` WP tidak
+   membawa zona waktu (ikut setelan situs, saat ini UTC) sehingga browser salah membacanya
+   sebagai jam lokal; `date_gmt` + "Z" selalu benar. */
+function tanggalWp(obj, kunci) {
+  kunci = kunci || "date";
+  if (!obj) return "";
+  return obj[kunci + "_gmt"] ? obj[kunci + "_gmt"] + "Z" : obj[kunci] || "";
+}
+
+/* Tanggal ditampilkan dalam WIB (GMT+7). */
 function formatTanggal(iso) {
   try {
     var d = new Date(iso);
@@ -28,6 +38,7 @@ function formatTanggal(iso) {
       day: "numeric",
       month: "long",
       year: "numeric",
+      timeZone: "Asia/Jakarta",
     });
   } catch (e) {
     return "";
@@ -146,7 +157,7 @@ function kartuBeritaHTML(halaman, gambarUrl, namaTag) {
     stripHtml((halaman.excerpt && halaman.excerpt.rendered) || ""),
     130,
   );
-  var tanggal = formatTanggal(halaman.date);
+  var tanggal = formatTanggal(tanggalWp(halaman));
   var link = halaman.slug ? urlBaca(halaman) : halaman.link || "#";
 
   var thumb = gambarUrl
@@ -470,7 +481,10 @@ function initTemaBersama() {
    opsi = {
      gridId, paginationId, endpoint ("wp/v2/pages" atau "wp/v2/posts?categories=7"),
      perPage, pakaiTag (bool), pesanKosong, pesanError, halamanAwal,
-     pakaiUrl (bool: baca/tulis ?s=, ?tag=, ?hal= di URL), infoId
+     pakaiUrl (bool: baca/tulis ?s=, ?tag=, ?hal= di URL), infoId,
+     kartuHTML (opsional: function(item, namaTag) → html, default kartuBeritaHTML),
+     skeleton (opsional: function(grid, jumlah)), selektorKartu (opsional, untuk reveal),
+     sesudahRender (opsional: function(grid, daftarItem))
    }
    --------------------------------------------------------- */
 function muatDaftarBerpaginasi(opsi) {
@@ -603,7 +617,7 @@ function muatDaftarBerpaginasi(opsi) {
   function render(halaman) {
     halamanSekarang = halaman;
     perbaruiUrl();
-    tampilkanSkeleton(grid, perPage);
+    (opsi.skeleton || tampilkanSkeleton)(grid, perPage);
     if (pagWrap) pagWrap.innerHTML = "";
     tampilkanInfo(null);
 
@@ -660,11 +674,12 @@ function muatDaftarBerpaginasi(opsi) {
           if (opsi.pakaiTag && item.tags && item.tags.length > 0) {
             namaTag = tagDict[item.tags[0]] || "";
           }
-          kartuHtml += kartuBeritaHTML(item, gambar, namaTag);
+          kartuHtml += opsi.kartuHTML ? opsi.kartuHTML(item, namaTag) : kartuBeritaHTML(item, gambar, namaTag);
         });
 
         grid.innerHTML = kartuHtml;
-        daftarkanReveal(grid.querySelectorAll(".news-card"));
+        daftarkanReveal(grid.querySelectorAll(opsi.selektorKartu || ".news-card"));
+        if (opsi.sesudahRender) opsi.sesudahRender(grid, daftarItem);
         bangunPaginasi(hasil.totalPages);
       })
       .catch(function (err) {

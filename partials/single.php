@@ -131,7 +131,7 @@ function render_komentar($parent, $anakKomentar, $bolehKomentar, $kedalaman, $ke
         : '<span class="komentar-avatar komentar-avatar-huruf">' . esc(mb_strtoupper(mb_substr($nama, 0, 1))) . '</span>')
       . '<div class="komentar-main">'
       . '<header class="komentar-meta"><strong class="komentar-nama">' . $namaHtml . '</strong>'
-      . '<a class="komentar-waktu" href="#comment-' . (int) $k['id'] . '"><time datetime="' . esc($k['date']) . '">' . esc(format_tanggal_id($k['date'], true)) . '</time></a></header>'
+      . '<a class="komentar-waktu" href="#comment-' . (int) $k['id'] . '"><time datetime="' . esc(tanggal_wp($k)) . '">' . esc(format_tanggal_id(tanggal_wp($k), true)) . '</time></a></header>'
       . '<div class="komentar-isi">' . $k['content']['rendered'] . '</div>'
       . (($bolehKomentar && $kedalaman < $kedalamanMaks)
         ? '<button type="button" class="komentar-balas" data-parent="' . (int) $k['id'] . '" data-nama="' . esc($nama) . '">'
@@ -188,7 +188,7 @@ $pesanKomentar = isset($_GET['pesan']) ? teks_polos($_GET['pesan']) : '';
 <meta property="og:url" content="<?php echo esc($urlKanonik); ?>">
 <?php if ($gambarOg): ?><meta property="og:image" content="<?php echo esc($gambarOg); ?>">
 <?php endif; ?>
-<meta property="article:published_time" content="<?php echo esc($item['date']); ?>">
+<meta property="article:published_time" content="<?php echo esc(date('c', strtotime(tanggal_wp($item)))); ?>">
 <meta property="article:modified_time" content="<?php echo esc($item['modified']); ?>">
 <meta name="twitter:card" content="<?php echo $gambarOg ? 'summary_large_image' : 'summary'; ?>">
 <script type="application/ld+json"><?php echo json_encode(array(
@@ -197,7 +197,7 @@ $pesanKomentar = isset($_GET['pesan']) ? teks_polos($_GET['pesan']) : '';
   'headline' => $judulPolos,
   'description' => $ringkasan,
   'image' => $gambarOg ? array($gambarOg) : array(),
-  'datePublished' => $item['date'],
+  'datePublished' => date('c', strtotime(tanggal_wp($item))),
   'dateModified' => $item['modified'],
   'author' => array('@type' => 'Organization', 'name' => teks_polos($penulis['name'])),
   'publisher' => array('@type' => 'Organization', 'name' => $namaSitus),
@@ -273,7 +273,7 @@ $pesanKomentar = isset($_GET['pesan']) ? teks_polos($_GET['pesan']) : '';
           <?php echo esc(teks_polos($penulis['name'])); ?>
         </span>
       <?php endif; ?>
-      <span><time datetime="<?php echo esc($item['date']); ?>"><?php echo esc(format_tanggal_id($item['date'])); ?></time></span>
+      <span><time datetime="<?php echo esc(tanggal_wp($item)); ?>"><?php echo esc(format_tanggal_id(tanggal_wp($item))); ?></time></span>
       <span><?php echo $menitBaca; ?> menit baca</span>
       <a href="#komentar"><?php echo count($komentar); ?> komentar</a>
     </div>
@@ -295,7 +295,7 @@ $pesanKomentar = isset($_GET['pesan']) ? teks_polos($_GET['pesan']) : '';
       </div>
 
       <?php if ($item['modified'] && substr($item['modified'], 0, 10) !== substr($item['date'], 0, 10)): ?>
-        <p class="baca-diperbarui">Diperbarui <?php echo esc(format_tanggal_id($item['modified'], true)); ?></p>
+        <p class="baca-diperbarui">Diperbarui <?php echo esc(format_tanggal_id(tanggal_wp($item, 'modified'), true)); ?></p>
       <?php endif; ?>
 
       <?php if ($tags): ?>
@@ -454,7 +454,7 @@ $pesanKomentar = isset($_GET['pesan']) ? teks_polos($_GET['pesan']) : '';
                   <span class="widget-thumb"><?php if ($g): ?><img src="<?php echo esc($g); ?>" alt="" loading="lazy"><?php else: ?><span class="motif-star"></span><?php endif; ?></span>
                   <span class="widget-teks">
                     <strong><?php echo $t['title']['rendered']; ?></strong>
-                    <small><?php echo esc(format_tanggal_id($t['date'])); ?></small>
+                    <small><?php echo esc(format_tanggal_id(tanggal_wp($t))); ?></small>
                   </span>
                 </a>
               </li>
@@ -483,7 +483,7 @@ $pesanKomentar = isset($_GET['pesan']) ? teks_polos($_GET['pesan']) : '';
                 <a href="<?php echo esc(url_baca($t, $baseUrl)); ?>">
                   <span class="widget-teks">
                     <strong><?php echo $t['title']['rendered']; ?></strong>
-                    <small><?php echo esc(format_tanggal_id($t['date'])); ?></small>
+                    <small><?php echo esc(format_tanggal_id(tanggal_wp($t))); ?></small>
                   </span>
                 </a>
               </li>

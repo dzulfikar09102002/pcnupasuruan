@@ -14,6 +14,7 @@
     <nav class="main-nav">
       <a href="<?php echo $baseUrl; ?>#profil">Profil</a>
       <a href="<?php echo $baseUrl; ?>news/">Berita</a>
+      <a href="<?php echo $baseUrl; ?>program/">Program</a>
       <a href="<?php echo $baseUrl; ?>#kepengurusan">Pengurus</a>
 
       <div class="nav-dropdown">

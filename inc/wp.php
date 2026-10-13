@@ -11,6 +11,9 @@ define('WP_API_ROOT', WP_SITE . '/wp-json/');
 define('WP_CACHE_DIR', sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'pcnu-wp-cache');
 define('WP_CACHE_TTL', 300);
 
+// Semua tanggal ditampilkan dalam WIB (GMT+7), apa pun zona waktu server/WordPress.
+date_default_timezone_set('Asia/Jakarta');
+
 function wp_url($path, $query = array())
 {
   $url = WP_API_ROOT . ltrim($path, '/');
@@ -164,6 +167,17 @@ function potong_teks($teks, $maks)
   return preg_replace('/\s+\S*$/u', '', $teks) . '…';
 }
 
+/**
+ * Waktu sebuah objek WP (post/page/komentar) sebagai ISO UTC yang pasti.
+ * Field 'date' WP tidak membawa zona waktu (mengikuti setelan situs, saat ini UTC),
+ * jadi selalu pakai '<kunci>_gmt' + 'Z' supaya konversi ke WIB benar.
+ */
+function tanggal_wp($obj, $kunci = 'date')
+{
+  if (!empty($obj[$kunci . '_gmt'])) return $obj[$kunci . '_gmt'] . 'Z';
+  return isset($obj[$kunci]) ? $obj[$kunci] : '';
+}
+
 function format_tanggal_id($iso, $denganJam = false)
 {
   $ts = strtotime((string) $iso);
@@ -267,7 +281,7 @@ function kartu_berita_html($item, $baseUrl, $namaTag = '')
     . '<a class="news-thumb" href="' . esc($link) . '">' . $thumb . '</a>'
     . '<div class="news-body">'
     . $badge
-    . '<span class="news-date">' . esc(format_tanggal_id($item['date'])) . '</span>'
+    . '<span class="news-date">' . esc(format_tanggal_id(tanggal_wp($item))) . '</span>'
     . '<h3><a href="' . esc($link) . '">' . $judul . '</a></h3>'
     . '<p>' . esc($excerpt) . '</p>'
     . '<a class="news-link" href="' . esc($link) . '">Baca selengkapnya <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>'

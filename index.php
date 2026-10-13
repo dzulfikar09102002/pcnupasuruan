@@ -64,6 +64,29 @@ $baseUrl = './';
   </div>
 </div>
 
+<section class="program-ig" id="program-kegiatan">
+  <div class="wrap">
+    <div class="divider"><span>Program Kegiatan</span></div>
+    <div class="section-head">
+      <h2>Program &amp; Kegiatan Terbaru</h2>
+      <p>Ikuti kabar program dan kegiatan PCNU Kota Pasuruan bersama lembaga dan badan otonom. Geser untuk melihat foto lain, ketuk untuk membaca dan berkomentar.</p>
+    </div>
+    <div class="ig-baris">
+      <button type="button" class="ig-baris-panah ig-baris-kiri" aria-label="Program sebelumnya" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="ig-grid ig-grid-geser" id="programGrid"></div>
+      <button type="button" class="ig-baris-panah ig-baris-kanan" aria-label="Program berikutnya">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+    <div class="section-more">
+      <a class="btn" href="<?php echo $baseUrl; ?>program/">Lihat Semua Program <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+    <?php include __DIR__ . '/partials/sosial.php'; ?>
+  </div>
+</section>
+
 <section class="profil" id="profil">
   <div class="wrap profil-grid">
     <div class="profil-text">
@@ -295,6 +318,7 @@ $baseUrl = './';
 <?php include __DIR__ . '/partials/footer.php'; ?>
 
 <script src="<?php echo $baseUrl; ?>assets/common.js"></script>
+<script src="<?php echo $baseUrl; ?>assets/program.js"></script>
 <script>
 (function(){
   "use strict";
@@ -723,6 +747,7 @@ $baseUrl = './';
     initTemaBersama();
     muatHeroCarousel();
     muatWarta();
+    muatProgramBeranda("programGrid", 6);
     muatArtikel();
     muatGaleri();
     pasangKontrolCarousel();
