@@ -12,31 +12,37 @@ $baseUrl = './';
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&family=Schibsted+Grotesk:wght@400..800&family=Amiri:wght@400;700&family=Lora:wght@700&family=Space+Mono&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="<?php echo $baseUrl; ?>assets/theme.css">
 </head>
 <body>
+<div class="progres-gulir" id="progresGulir" aria-hidden="true"></div>
 <?php include __DIR__ . '/partials/header.php'; ?>
 
 <section class="hero">
-   <div class="hero-pattern" aria-hidden="true"></div>
+  <div class="hero-pattern" aria-hidden="true"></div>
+  <canvas class="hero-partikel" id="heroPartikel" aria-hidden="true"></canvas>
   <div class="wrap wrap-hero">
     <div>
-      <span class="eyebrow" style="animation:fadeInUp .7s ease both;"><span class="motif-star"></span> Pengurus Cabang Nahdlatul Ulama</span>
-      <h1 style="animation:fadeInUp .7s ease .1s both;">Membersamai umat, <em>menjaga amanah</em> para muassis.</h1>
-      <p class="lead" style="animation:fadeInUp .7s ease .2s both;">Situs resmi PCNU Kota Pasuruan — kabar kegiatan, khidmah lembaga, dan program kemaslahatan umat dari Nahdlatul Ulama Kota Pasuruan.</p>
-      <div class="cta-row" style="animation:fadeInUp .7s ease .3s both;">
+      <span class="eyebrow hero-masuk" style="--i:0;"><span class="motif-star"></span> Pengurus Cabang Nahdlatul Ulama</span>
+      <h1 class="judul-hero">
+        <span class="baris" style="--i:1;"><span>Membersamai umat,</span></span>
+        <span class="baris" style="--i:2;"><em>menjaga amanah</em></span>
+        <span class="baris" style="--i:3;"><span>para muassis.</span></span>
+      </h1>
+      <p class="lead hero-masuk" style="--i:5;">Situs resmi PCNU Kota Pasuruan — kabar kegiatan, khidmah lembaga, dan program kemaslahatan umat dari Nahdlatul Ulama Kota Pasuruan.</p>
+      <div class="cta-row hero-masuk" style="--i:6;">
         <a href="#warta" class="btn btn-emas">Berita Terbaru</a>
         <a href="#profil" class="btn btn-ghost">Tentang PCNU</a>
       </div>
     </div>
 
-    <div class="hero-visual" style="animation:fadeInUp .8s ease .25s both;">
+    <div class="hero-visual" id="heroVisual">
       <div class="carousel-frame" id="heroCarousel">
         <div class="carousel-track" id="heroCarouselTrack">
           <div class="slide active">
             <div class="ph-fallback">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l2.6 5.1 5.6.9-4 4 1 5.6L12 15l-5.2 2.6 1-5.6-4-4 5.6-.9L12 2z" fill="currentColor"/></svg>
+              <span class="ph-kaligrafi" aria-hidden="true">&#1606;&#1607;&#1590;&#1577; &#1575;&#1604;&#1593;&#1604;&#1605;&#1575;&#1569;</span>
             </div>
           </div>
         </div>
@@ -61,6 +67,20 @@ $baseUrl = './';
       <strong><span id="tahunKhidmat">2025–2030</span></strong>
       <span>MASA KHIDMAT PENGURUS</span>
     </div>
+  </div>
+</div>
+
+<?php
+/* Pita berjalan nama badan otonom & lembaga. Isi ditulis dua kali supaya putarannya mulus. */
+$pitaBanom = array('Muslimat NU', 'Fatayat NU', 'GP Ansor', 'Banser', 'IPNU', 'IPPNU', 'Pagar Nusa', 'ISHARI', "LP Ma'arif NU", 'RMI NU', 'LAZISNU', 'LTMNU', 'Lakpesdam NU', 'Pergunu', 'ISNU', 'Lesbumi NU');
+?>
+<div class="pita-banom" aria-label="Badan otonom dan lembaga PCNU Kota Pasuruan">
+  <div class="pita-banom-jalur">
+    <?php for ($putaran = 0; $putaran < 2; $putaran++): ?>
+    <ul class="pita-banom-isi"<?php if ($putaran) echo ' aria-hidden="true"'; ?>>
+      <?php foreach ($pitaBanom as $nama): ?><li><?php echo $nama; ?></li><?php endforeach; ?>
+    </ul>
+    <?php endfor; ?>
   </div>
 </div>
 
@@ -284,7 +304,7 @@ $baseUrl = './';
         <p>Menaungi belasan pondok pesantren di Kota Pasuruan dalam Robithah Ma'had Islamiyah.</p>
       </div>
       <div class="program-card">
-        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.6 5.1 5.6.9-4 4 1 5.6L12 15l-5.2 2.6 1-5.6-4-4 5.6-.9L12 2z"/></svg></div>
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.5 14.2A8.5 8.5 0 119.8 3.5a6.8 6.8 0 0010.7 10.7z"/></svg></div>
         <h3>Huwal Habiban</h3>
         <p>Kegiatan rutin dzikir dan sholawat sebagai penjaga tradisi spiritual pengurus dan warga NU.</p>
       </div>
@@ -468,7 +488,7 @@ $baseUrl = './';
     })
     .then(function(gambarFinal){
       if(!gambarFinal || !gambarFinal.length){
-        track.innerHTML = '<div class="galeri-item"><div class="ph-fallback">' + STAR_SVG + '</div></div>';
+        track.innerHTML = '<div class="galeri-item"><div class="ph-fallback">' + GAMBAR_KOSONG_HTML + '</div></div>';
         track.style.animation = "none";
         return;
       }
@@ -484,7 +504,7 @@ $baseUrl = './';
     })
     .catch(function(err){
       console.warn("Galeri belum bisa dimuat:", err.message);
-      track.innerHTML = '<div class="galeri-item"><div class="ph-fallback">' + STAR_SVG + '</div></div>';
+      track.innerHTML = '<div class="galeri-item"><div class="ph-fallback">' + GAMBAR_KOSONG_HTML + '</div></div>';
       track.style.animation = "none";
     });
   }
@@ -743,8 +763,204 @@ $baseUrl = './';
     daftarkanReveal(document.querySelectorAll(".cta-inner > div"));
   }
 
+  /* ---------------------------------------------------------
+     EFEK LANDING: sorotan kursor & kemiringan 3D di hero,
+     paralaks kaligrafi, dan garis progres gulir
+     --------------------------------------------------------- */
+  function pasangEfekLanding(){
+    var hero = document.querySelector(".hero");
+    var visual = document.getElementById("heroVisual");
+    var progres = document.getElementById("progresGulir");
+    var kurangiGerak = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var bisaHover = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    var antreBingkai = false;
+    var posisiKursor = null;
+
+    function gambarUlang(){
+      antreBingkai = false;
+      var gulir = window.pageYOffset || document.documentElement.scrollTop;
+      var tinggiDok = document.documentElement.scrollHeight - window.innerHeight;
+      if(progres) progres.style.transform = "scaleX(" + (tinggiDok > 0 ? Math.min(gulir / tinggiDok, 1) : 0) + ")";
+      if(!hero || kurangiGerak) return;
+      var tinggiHero = hero.offsetHeight;
+      if(gulir < tinggiHero){
+        hero.style.setProperty("--gulir", Math.round(gulir));
+      }
+      if(posisiKursor && visual){
+        var kotak = hero.getBoundingClientRect();
+        var x = (posisiKursor.x - kotak.left) / kotak.width;
+        var y = (posisiKursor.y - kotak.top) / kotak.height;
+        hero.style.setProperty("--kursor-x", (x * 100).toFixed(1) + "%");
+        hero.style.setProperty("--kursor-y", (y * 100).toFixed(1) + "%");
+        visual.style.setProperty("--miring-x", ((0.5 - y) * 7).toFixed(2) + "deg");
+        visual.style.setProperty("--miring-y", ((x - 0.5) * 9).toFixed(2) + "deg");
+      }
+    }
+    function minta(){
+      if(antreBingkai) return;
+      antreBingkai = true;
+      requestAnimationFrame(gambarUlang);
+    }
+
+    window.addEventListener("scroll", minta, { passive:true });
+    window.addEventListener("resize", minta);
+    if(hero && bisaHover && !kurangiGerak){
+      hero.addEventListener("pointermove", function(e){
+        posisiKursor = { x:e.clientX, y:e.clientY };
+        hero.classList.add("hero-aktif");
+        minta();
+      });
+      hero.addEventListener("pointerleave", function(){
+        posisiKursor = null;
+        hero.classList.remove("hero-aktif");
+        if(visual){
+          visual.style.setProperty("--miring-x", "0deg");
+          visual.style.setProperty("--miring-y", "0deg");
+        }
+      });
+    }
+    minta();
+  }
+
+  /* ---------------------------------------------------------
+     PARTIKEL HERO: butiran cahaya emas melayang naik, berkelip,
+     dan menyingkir pelan dari kursor. Berhenti saat hero tidak
+     terlihat atau tab disembunyikan.
+     --------------------------------------------------------- */
+  function pasangPartikelHero(){
+    var kanvas = document.getElementById("heroPartikel");
+    var hero = document.querySelector(".hero");
+    if(!kanvas || !hero || !kanvas.getContext) return;
+    var ctx = kanvas.getContext("2d");
+    var kurangiGerak = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var rasio = Math.min(window.devicePixelRatio || 1, 2);
+    var lebar = 0, tinggi = 0;
+    var partikel = [];
+    var kursor = null;
+    var terlihat = true;
+    var idBingkai = null;
+    var waktuLalu = 0;
+
+    function buatPartikel(acakTinggi){
+      var kedalaman = Math.random();               /* 0 = jauh, 1 = dekat */
+      return {
+        x: Math.random() * lebar,
+        y: acakTinggi ? Math.random() * tinggi : tinggi + 10,
+        r: 0.7 + kedalaman * 2.6,
+        vy: 6 + kedalaman * 22,                    /* px per detik */
+        goyang: Math.random() * Math.PI * 2,
+        lajuGoyang: 0.4 + Math.random() * 0.8,
+        amplitudo: 6 + Math.random() * 18,
+        kelip: Math.random() * Math.PI * 2,
+        lajuKelip: 0.8 + Math.random() * 1.6,
+        terang: 0.4 + kedalaman * 0.6,
+        dx: 0, dy: 0
+      };
+    }
+
+    function ukurUlang(){
+      lebar = hero.offsetWidth;
+      tinggi = hero.offsetHeight;
+      kanvas.width = Math.round(lebar * rasio);
+      kanvas.height = Math.round(tinggi * rasio);
+      ctx.setTransform(rasio, 0, 0, rasio, 0, 0);
+      var target = Math.round(Math.min(140, Math.max(40, lebar * tinggi / 8500)));
+      while(partikel.length < target) partikel.push(buatPartikel(true));
+      partikel.length = target;
+    }
+
+    function gambar(waktu){
+      var dt = waktuLalu ? Math.min((waktu - waktuLalu) / 1000, 0.05) : 0.016;
+      waktuLalu = waktu;
+      ctx.clearRect(0, 0, lebar, tinggi);
+      ctx.globalCompositeOperation = "lighter";
+      for(var i = 0; i < partikel.length; i++){
+        var p = partikel[i];
+        p.y -= p.vy * dt;
+        p.goyang += p.lajuGoyang * dt;
+        p.kelip += p.lajuKelip * dt;
+
+        /* Dorongan halus menjauhi kursor, lalu kembali pelan */
+        if(kursor){
+          var jx = p.x + p.dx - kursor.x, jy = p.y + p.dy - kursor.y;
+          var jarak2 = jx * jx + jy * jy;
+          if(jarak2 < 22500){
+            var kuat = (1 - Math.sqrt(jarak2) / 150) * 60 * dt;
+            var jarak = Math.sqrt(jarak2) || 1;
+            p.dx += jx / jarak * kuat;
+            p.dy += jy / jarak * kuat;
+          }
+        }
+        p.dx *= 0.96; p.dy *= 0.96;
+
+        if(p.y < -12){ partikel[i] = buatPartikel(false); continue; }
+        var x = p.x + Math.sin(p.goyang) * p.amplitudo + p.dx;
+        var y = p.y + p.dy;
+        var alfa = p.terang * (0.55 + 0.45 * Math.sin(p.kelip));
+        /* Pudar di dekat tepi atas supaya tidak terpotong tiba-tiba */
+        alfa *= Math.min(1, y / (tinggi * 0.25));
+        if(alfa <= 0) continue;
+
+        var g = ctx.createRadialGradient(x, y, 0, x, y, p.r * 4);
+        g.addColorStop(0, "rgba(255,226,150," + alfa.toFixed(3) + ")");
+        g.addColorStop(0.35, "rgba(227,183,90," + (alfa * 0.45).toFixed(3) + ")");
+        g.addColorStop(1, "rgba(227,183,90,0)");
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(x, y, p.r * 4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalCompositeOperation = "source-over";
+      idBingkai = requestAnimationFrame(gambar);
+    }
+
+    function mulai(){
+      if(idBingkai || !terlihat || document.hidden) return;
+      waktuLalu = 0;
+      idBingkai = requestAnimationFrame(gambar);
+    }
+    function berhenti(){
+      if(idBingkai) cancelAnimationFrame(idBingkai);
+      idBingkai = null;
+    }
+
+    ukurUlang();
+    if(kurangiGerak){
+      /* Tanpa gerak: cukup gambar sekali sebagai taburan diam */
+      gambar(16);
+      berhenti();
+      return;
+    }
+
+    var tundaUkur = null;
+    function jadwalkanUkur(){
+      clearTimeout(tundaUkur);
+      tundaUkur = setTimeout(ukurUlang, 150);
+    }
+    window.addEventListener("resize", jadwalkanUkur);
+    /* Tinggi hero bisa berubah setelah foto carousel termuat */
+    if("ResizeObserver" in window) new ResizeObserver(jadwalkanUkur).observe(hero);
+    hero.addEventListener("pointermove", function(e){
+      var kotak = hero.getBoundingClientRect();
+      kursor = { x:e.clientX - kotak.left, y:e.clientY - kotak.top };
+    });
+    hero.addEventListener("pointerleave", function(){ kursor = null; });
+    document.addEventListener("visibilitychange", function(){
+      if(document.hidden) berhenti(); else mulai();
+    });
+    if("IntersectionObserver" in window){
+      new IntersectionObserver(function(entries){
+        terlihat = entries[0].isIntersecting;
+        if(terlihat) mulai(); else berhenti();
+      }).observe(hero);
+    }
+    mulai();
+  }
+
   document.addEventListener("DOMContentLoaded", function(){
     initTemaBersama();
+    pasangEfekLanding();
+    pasangPartikelHero();
     muatHeroCarousel();
     muatWarta();
     muatProgramBeranda("programGrid", 6);

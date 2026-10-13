@@ -201,7 +201,7 @@ function judulProgram(item) {
    --------------------------------------------------------- */
 function mediaProgramHTML(daftarGambar, judul, kelas) {
   if (!daftarGambar.length) {
-    return '<div class="ig-media ' + (kelas || "") + '"><div class="ig-slides"><div class="ig-slide ig-slide-kosong">' + STAR_SVG + "</div></div></div>";
+    return '<div class="ig-media ' + (kelas || "") + '"><div class="ig-slides"><div class="ig-slide ig-slide-kosong">' + GAMBAR_KOSONG_HTML + "</div></div></div>";
   }
   var banyak = daftarGambar.length > 1;
   var slides = daftarGambar

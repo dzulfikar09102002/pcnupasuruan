@@ -269,7 +269,7 @@ function kartu_berita_html($item, $baseUrl, $namaTag = '')
 
   $thumb = $gambar
     ? '<img src="' . esc($gambar) . '" alt="" loading="lazy">'
-    : '<div class="ph-fallback"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l2.6 5.1 5.6.9-4 4 1 5.6L12 15l-5.2 2.6 1-5.6-4-4 5.6-.9L12 2z" fill="currentColor"/></svg></div>';
+    : '<div class="ph-fallback"><span class="ph-kaligrafi" aria-hidden="true">&#1606;&#1607;&#1590;&#1577; &#1575;&#1604;&#1593;&#1604;&#1605;&#1575;&#1569;</span></div>';
 
   $badge = '';
   if ($namaTag !== '') {

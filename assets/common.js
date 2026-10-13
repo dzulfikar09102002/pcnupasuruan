@@ -5,8 +5,8 @@ var BASE_URL = (function () {
   var s = document.currentScript && document.currentScript.src;
   return s ? s.replace(/assets\/common\.js(\?.*)?$/, "") : "./";
 })();
-var STAR_SVG =
-  '<svg viewBox="0 0 24 24" fill="none"><path d="M12 2l2.6 5.1 5.6.9-4 4 1 5.6L12 15l-5.2 2.6 1-5.6-4-4 5.6-.9L12 2z" fill="currentColor"/></svg>';
+var GAMBAR_KOSONG_HTML =
+  '<span class="ph-kaligrafi" aria-hidden="true">&#1606;&#1607;&#1590;&#1577; &#1575;&#1604;&#1593;&#1604;&#1605;&#1575;&#1569;</span>';
 var ARROW_SVG =
   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 
@@ -162,7 +162,7 @@ function kartuBeritaHTML(halaman, gambarUrl, namaTag) {
 
   var thumb = gambarUrl
     ? '<img src="' + gambarUrl + '" alt="" loading="lazy">'
-    : '<div class="ph-fallback">' + STAR_SVG + "</div>";
+    : '<div class="ph-fallback">' + GAMBAR_KOSONG_HTML + "</div>";
 
   var badgeHtml = "";
   if (namaTag) {

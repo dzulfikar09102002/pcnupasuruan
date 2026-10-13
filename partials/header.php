@@ -4,7 +4,7 @@
     <a class="brand" href="<?php echo $baseUrl; ?>" id="brandLink">
       <img id="logoImg" alt="Logo PCNU Kota Pasuruan" style="display:none;">
       <div class="brand-fallback" id="logoFallback">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.6 5.1 5.6.9-4 4 1 5.6L12 15l-5.2 2.6 1-5.6-4-4 5.6-.9L12 2z" fill="currentColor"/></svg>
+        <span class="brand-monogram">NU</span>
       </div>
       <span class="brand-text">
         <strong id="siteTitle">PCNU Kota Pasuruan</strong>
