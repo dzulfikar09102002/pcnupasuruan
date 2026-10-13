@@ -4,6 +4,7 @@ $tahun = date('Y');
 ?>
 <footer>
   <div class="footer-particles" id="footerParticles" aria-hidden="true"></div>
+  <?php $sosialFooter = true; include __DIR__ . '/sosial.php'; $sosialFooter = false; ?>
   <div class="wrap footer-grid">
     <div>
       <div class="footer-brand">
@@ -12,7 +13,6 @@ $tahun = date('Y');
       </div>
       <p class="footer-desc" id="footerDesc">Pengurus Cabang Nahdlatul Ulama Kota Pasuruan — membersamai umat lewat khidmah lembaga dan program kemaslahatan.</p>
       <p class="footer-desc" style="margin-top:12px;">📍 Jl. Untung Suropati No.16, Kebonagung, Kec. Purworejo, Kota Pasuruan, Jawa Timur 67116</p>
-      <?php include __DIR__ . '/sosial.php'; ?>
     </div>
     <div class="footer-col">
       <h4>Jelajah</h4>
