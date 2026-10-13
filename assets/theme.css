@@ -276,29 +276,27 @@ nav.main-nav a:hover { color: var(--putih); }
   background-size:180px 180px;
   opacity:.06;
 }
+/* Logo NU asli (assets/logo-nu.svg) sebagai mask: diwarnai emas tipis, disapu kilau,
+   diletakkan di tengah hero, dan bergeser pelan saat digulir (--gulir dari JS beranda). */
 .hero-pattern::before{
-  content:"\0646\0647\0636\0629 \0627\0644\0639\0644\0645\0627\0621";
+  content:"";
   position:absolute;
-  right:-3%;
-  bottom:-16%;
-  font-family:var(--arab);
-  font-weight:700;
-  font-size:clamp(150px, 24vw, 380px);
-  line-height:1;
-  white-space:nowrap;
-  direction:rtl;
-  color:transparent;
-  -webkit-text-stroke:1px rgba(227,183,90,.28);
-  background:linear-gradient(100deg, transparent 38%, rgba(227,183,90,.5) 50%, transparent 62%) no-repeat;
-  background-size:300% 100%;
-  -webkit-background-clip:text;
-  background-clip:text;
-  animation:kilauKaligrafi 9s ease-in-out infinite;
-  transform:translate3d(0, calc(var(--gulir, 0) * -0.18px), 0);
+  left:50%;
+  top:52%;
+  width:min(760px, 58vw);
+  aspect-ratio:421.7 / 274.6;
+  background:
+    linear-gradient(100deg, transparent 38%, rgba(255,226,150,.5) 50%, transparent 62%) no-repeat,
+    rgba(227,183,90,.1);
+  background-size:300% 100%, auto;
+  -webkit-mask:url("logo-nu.svg") center / contain no-repeat;
+  mask:url("logo-nu.svg") center / contain no-repeat;
+  animation:kilauLogo 9s ease-in-out infinite;
+  transform:translate3d(-50%, calc(-50% + var(--gulir, 0) * -0.18px), 0);
 }
-@keyframes kilauKaligrafi{
-  0%, 15%{ background-position:120% 0; }
-  70%, 100%{ background-position:-20% 0; }
+@keyframes kilauLogo{
+  0%, 15%{ background-position:120% 0, 0 0; }
+  70%, 100%{ background-position:-20% 0, 0 0; }
 }
 .hero::before{
   content:"";
@@ -2773,7 +2771,7 @@ h1,h2,h3,h4{ letter-spacing:-.012em; font-optical-sizing:auto; }
 
 /* Pola halaman dalam (page-hero) tetap terlihat samar */
 .page-hero .hero-pattern{ opacity:.55; }
-.page-hero .hero-pattern::before{ font-size:clamp(110px, 16vw, 240px); bottom:-24%; }
+.page-hero .hero-pattern::before{ left:78%; top:50%; width:min(460px, 42vw); }
 
 /* ---------- Hero ---------- */
 .hero{ isolation:isolate; }
@@ -2953,7 +2951,7 @@ h1,h2,h3,h4{ letter-spacing:-.012em; font-optical-sizing:auto; }
 @media (max-width: 620px){
   .pita-banom{ padding:14px 0; }
   .pita-banom-isi li::after{ margin:0 20px; }
-  .hero-pattern::before{ font-size:120px; bottom:-6%; right:-30%; }
+  .hero-pattern::before{ width:120vw; top:62%; }
   .hero h1.judul-hero{ max-width:none; }
 }
 /* Ukuran lama penanda bintang (persegi) diganti garis */
